@@ -8,4 +8,5 @@ dependencies = [
     "duckdb>=1.4.2",
     "ipykernel>=7.1.0",
     "pandas>=2.3.3",
+    "pyarrow>=22.0.0",
 ]
