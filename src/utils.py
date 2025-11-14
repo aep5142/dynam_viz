@@ -171,7 +171,19 @@ def loads_cae_db(
 
         columns = [col.lower() for col in cae_df.columns]
         cae_df.columns = columns
+        
+        col = cae_df["arancel_solicitado"]
 
+        cae_df["arancel_solicitado"] = (
+            pd.to_numeric(
+                col.astype(str)
+                .str.replace(r"[^\d\-]", "", regex=True)  # elimina todo lo que no sea número o signo
+                .replace("", pd.NA)
+                , errors="coerce"
+            ).astype("Int64")
+            )
+
+        
         cae_df["año_operacion"] = (
             pd.to_numeric(cae_df["año_operacion"], errors="coerce")
             .mul(1000)
@@ -192,3 +204,16 @@ def loads_cae_db(
 
         print(f"✅ DuckDB database saved at {db_path}")
         return conn
+    
+def executes_query_duckdb(query: str, db: duckdb.DuckDBPyConnection) -> pd.DataFrame:
+    """
+    Execute a SQL query on a DuckDB database connection and return the result as a pandas DataFrame.
+
+    Args:
+        query (str): The SQL query to execute.
+        db (duckdb.DuckDBPyConnection): The DuckDB database connection.
+
+    Returns:
+        pd.DataFrame: The result of the query as a pandas DataFrame.
+    """
+    return db.execute(query).df()
