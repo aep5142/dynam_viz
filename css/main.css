@@ -11,30 +11,36 @@ p {
 #main_grid_container{
    display: grid;
    background-color: transparent;
-   grid-template-columns: 1fr 6fr;
+   grid-template-columns: 30% 70%;
    border: 3px solid black;
    margin: 1%;
    padding: 0.5%;
    height: 700px
 
 }
-
-.main_grid_item {
+#map_section {
    display: grid;
    background-color: transparent;
-   border: 3px solid blue;
+   height: 800;
+   border: 3px solid brown;
    margin: 1%;
    padding: 1%;
-
 }
 
-.main_grid_item_map {
+#data_section {
    display: grid;
    background-color: transparent;
-   width: 250px;
    height: 800;
    border: 3px solid blue;
    margin: 1%;
    padding: 1%;
+}
 
+.trying {
+   display: grid;
+   background-color: transparent;
+   height: 800;
+   border: 3px solid yellow;
+   margin: 1%;
+   padding: 1%;
 }
