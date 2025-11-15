@@ -2,6 +2,25 @@ import pandas as pd
 from pathlib import Path
 import duckdb
 
+inflation = {2006: 1.098,
+             2007: 0.946,
+             2008: 0.817,
+             2009: 0.843,
+             2010: 0.79,
+             2011: 0.714,
+             2012: 0.688,
+             2013: 0.639,
+             2014: 0.566,
+             2015: 0.501,
+             2016: 0.461,
+             2017: 0.429,
+             2018: 0.393,
+             2019: 0.352,
+             2020: 0.313,
+             2021: 0.225,
+             2022: 0.086,
+             2023: 0.045,
+             2024: 1.0}
 
 # Getting the data
 def translate_english_degrees(row):
@@ -160,6 +179,7 @@ def loads_cae_db(
             3. Converts year columns to nullable integers after handling floating-point precision.
             4. Creates a new DuckDB database and saves the cleaned data as a table.
     """
+    global inflation
     # Load and clean data in streaming mode (pandas only used temporarily)
     if db_path.exists():
         conn = duckdb.connect(str(db_path))
@@ -195,6 +215,9 @@ def loads_cae_db(
             .mul(1000)
             .round()
             .astype("Int64")
+        )
+        cae_df["total_prestado_ajustado"] = cae_df["arancel_solicitado"] * (
+            1 + cae_df["año_operacion"].map(inflation)
         )
 
         # Create DuckDB database and persist table
