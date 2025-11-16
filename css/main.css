@@ -11,18 +11,17 @@ p {
 #main_grid_container{
    display: grid;
    background-color: transparent;
-   grid-template-columns: 30% 70%;
+   grid-template-columns: 25% 75%;
    border: 3px solid black;
    margin: 1%;
    padding: 0.5%;
-   height: 700px
-
+   height: 700px;
 }
+
 #map_section {
    display: grid;
    background-color: transparent;
-   height: 800;
-   border: 3px solid brown;
+   border: 3px solid yellow;
    margin: 1%;
    padding: 1%;
 }
@@ -30,17 +29,12 @@ p {
 #data_section {
    display: grid;
    background-color: transparent;
-   height: 800;
    border: 3px solid blue;
    margin: 1%;
    padding: 1%;
 }
 
-.trying {
-   display: grid;
-   background-color: transparent;
-   height: 800;
-   border: 3px solid yellow;
-   margin: 1%;
-   padding: 1%;
+.map {
+   height: 600px;
+   width:100px
 }
