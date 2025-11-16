@@ -3,7 +3,8 @@ import pandas as pd
 from pathlib import Path
 import altair as alt
 
-DOLLAR = 950 #1 dollar is $950 CLP
+DOLLAR = 950  # 1 dollar is $950 CLP
+
 
 # Helper Function 1: Automates filters
 def automates_where_clause(kwargs):
@@ -31,13 +32,11 @@ def automates_where_clause(kwargs):
         where_clause = "WHERE " + " AND ".join(filters)
     return where_clause
 
-#Helper 2: Watch the parquet db
+
+# Helper 2: Watch the parquet db
 def query_view_db(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -55,12 +54,10 @@ def query_view_db(
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+
 def query_total_borrowed(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -73,15 +70,14 @@ def query_total_borrowed(
     # Return scalar value
     return db.execute(query).fetchone()[0]
 
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+
 def query_total_granted(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -98,48 +94,53 @@ def query_total_granted(
 
     values = ["quintil 1 y 2", "quintil 3", "quintil 4", "quintil 5"]
     colors = ["#1d7874ff", "#679289ff", "#b2cec8ff", "#cfe795ff"]
-    
-    chart_solicitations = alt.Chart(solicitations).mark_area().encode(
-        x=alt.X(
-            "año_licitacion",
-            axis=alt.Axis(
-                format=".0f",
-                grid=False,
-                labelFontSize=14,
-                titleFontSize=16,
-                values=list(range(2006, 2026, 2)),
+
+    chart_solicitations = (
+        alt.Chart(solicitations)
+        .mark_area()
+        .encode(
+            x=alt.X(
+                "año_licitacion",
+                axis=alt.Axis(
+                    format=".0f",
+                    grid=False,
+                    labelFontSize=14,
+                    titleFontSize=16,
+                    values=list(range(2006, 2026, 2)),
+                ),
+            ).title("Year"),
+            y=alt.Y(
+                "total_count",
+                axis=alt.Axis(grid=False, labelFontSize=14, titleFontSize=16),
+            ).title("Total granted loans (thousands)"),
+            color=alt.Color(
+                "quintil",
+                scale=alt.Scale(domain=values, range=colors),
+                legend=alt.Legend(title="Quintile", orient="top-right"),
             ),
-        ).title("Year"),
-        y=alt.Y(
-            "total_count", axis=alt.Axis(grid=False, labelFontSize=14, titleFontSize=16)
-        ).title("Total granted loans (thousands)"),
-        color=alt.Color(
-            "quintil",
-            scale=alt.Scale(domain=values, range=colors),
-            legend=alt.Legend(title="Quintile", orient="top-right"),
-        ),
-    ).properties(
-        title="CAE loans by income quintile (thousands)",
-        height=400,
-        width=500,
-    ).configure_axis(grid=False, labelFontSize=12, titleFontSize=18
-    ).configure_view(strokeWidth=0
-    ).configure(background="transparent"
-    ).configure_legend(labelFontSize=14
-    ).configure_title(fontSize=20)
-    
-    
+        )
+        .properties(
+            title="CAE loans by income quintile (thousands)",
+            height=400,
+            width=500,
+        )
+        .configure_axis(grid=False, labelFontSize=12, titleFontSize=18)
+        .configure_view(strokeWidth=0)
+        .configure(background="transparent")
+        .configure_legend(labelFontSize=14)
+        .configure_title(fontSize=20)
+    )
+
     return chart_solicitations
 
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+
 def query_average_loan(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -154,11 +155,8 @@ def query_average_loan(
 
 
 def query_average_financed_years(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -171,12 +169,10 @@ def query_average_financed_years(
     # Return scalar value
     return db.execute(query).fetchone()[0]
 
+
 def query_prob_desertion(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -189,12 +185,10 @@ def query_prob_desertion(
     # Return scalar value
     return db.execute(query).fetchone()[0]
 
+
 def query_prob_graduation(
-    db: duckdb.DuckDBPyConnection,
-    path_parquet='data/summary_table.parquet',
-    **kwargs
-    ) -> int:
-    
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -208,14 +202,5 @@ def query_prob_graduation(
     return db.execute(query).fetchone()[0]
 
 
-
-
-
-
-
-
-
-
 db = duckdb.connect()
-print(query_prob_graduation(db, regions = ["REGION METROPOLITANA"]))
-
+print(query_prob_graduation(db, regions=["REGION METROPOLITANA"]))
