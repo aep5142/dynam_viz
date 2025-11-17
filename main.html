@@ -13,26 +13,50 @@
         <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
     </div>
     
-    <div> <!-- This is the div that will take some parameters-->
-        <label for="region">Select Region</label>
-        <select id="region" name="region_selected">
-            <option value="15region">REGION DE ARICA Y PARINACOTA</option>
-            <option value="1region">REGION DE TARAPACA</option>
-            <option value="2region">REGION DE ANTOFAGASTA</option>
-            <option value="3region">REGION DE ATACAMA</option>
-            <option value="4region">REGION DE COQUIMBO</option>
-            <option value="5region">REGION DE VALPARAISO</option>
-            <option value="13region">REGION METROPOLITANA</option>
-            <option value="6region">REGION DEL LIB. B. O'HIGGINS</option>
-            <option value="7region">REGION DEL MAULE</option>
-            <option value="16region">REGION DE ÑUBLE</option>
-            <option value="8region">REGION DEL BIO-BIO</option>
-            <option value="9region">REGION DE LA ARAUCANIA</option>
-            <option value="14region">REGION DE LOS RIOS</option>
-            <option value="10region">REGION DE LOS LAGOS</option>
-            <option value="11region">REGION DE AYSEN DEL G. C. IBAÑEZ</option>
-            <option value="12region">REGION DE MAGALLANES Y LA ANTARTICA</option>
-        </select>
+    <div class="div_three_columns"> <!-- This is the div that will take some parameters-->
+        <!-- This is the region selection list -->
+        <div>
+            <label for="region">Select Region</label>
+            <select id="region" name="region_selected">
+                <option value="">Select a region of Chile (Listed north to South)</option>
+                <option value="15region">REGION DE ARICA Y PARINACOTA</option>
+                <option value="1region">REGION DE TARAPACA</option>
+                <option value="2region">REGION DE ANTOFAGASTA</option>
+                <option value="3region">REGION DE ATACAMA</option>
+                <option value="4region">REGION DE COQUIMBO</option>
+                <option value="5region">REGION DE VALPARAISO</option>
+                <option value="13region">REGION METROPOLITANA</option>
+                <option value="6region">REGION DEL LIB. B. O'HIGGINS</option>
+                <option value="7region">REGION DEL MAULE</option>
+                <option value="16region">REGION DE ÑUBLE</option>
+                <option value="8region">REGION DEL BIO-BIO</option>
+                <option value="9region">REGION DE LA ARAUCANIA</option>
+                <option value="14region">REGION DE LOS RIOS</option>
+                <option value="10region">REGION DE LOS LAGOS</option>
+                <option value="11region">REGION DE AYSEN DEL G. C. IBAÑEZ</option>
+                <option value="12region">REGION DE MAGALLANES Y LA ANTARTICA</option>
+            </select>
+        </div>
+
+        <!-- This is the year selection range -->
+        <div>
+            <label for="year">Select Years (2006-2024):</label>
+            <input type="range" id = "year_selector" name="years" min="2006" max="2024", step="1">
+        </div>
+        
+        
+        <!-- This is the quintile selection range -->
+        <div>
+            <label for="quintile">Select quintile:</label>
+            <select id="quintile" name="region_selected">
+                <option value="">Select a Quintile</option>
+                <option value="quintil 1 y 2">Quintile 1 & 2</option>
+                <option value="quintil 3">Quintile 3</option>
+                <option value="quintl 4">Quintile 4</option>
+                <option value="quintil 5">Quintile 5</option>
+            </select>
+        </div>
+        
     </div>
 
     <!-- <div id = map_section> <!--This div is the one that has the map horizontally on the top -->
@@ -41,11 +65,60 @@
     
     <div id="main_grid_container">
         <div id="map_section">
-            <img src="svgs/chile.svg" alt="chile">
+            <img id="map" src="svgs/chile.svg" alt="chile">
         </div>
-    <div id="data_section"></div>
+        
+        <div id="data_section" class="div_three_rows">
+            
+            <div class="macro_data div_two_columns">
+                <!-- This is the total granted requests section-->
+                <div id="total_requests">
+                    <h2>Viz total requests</h2>
+                    <h6>Start with number</h6>
+                </div>
+
+                <!-- This is the total borrowed-->
+                <div id="total_borrowed">
+                    <h2>Viz total_borrowed</h2>
+                    <h6>Start with number</h6>
+                </div>
+            </div>
+
+            <div class="avg_lendee_data div_three_columns">
+                <!-- This is the Average loan section-->
+                <div id="avg_loan">
+                    <h2>Viz avg_loan</h2>
+                    <h6>Start with number</h6>
+                </div>
+
+                <!-- This is the Average Financed years section-->
+                <div id="avg_financed_years">
+                    <h2>Viz avg_financed_years</h2>
+                    <h6>Start with number</h6>
+                </div>
+
+                <!-- This is the Average Percentage Financed section-->
+                <div id="percentage_financed">
+                    <h2>Viz percentage_financed</h2>
+                    <h6>Start with number</h6>
+                </div>
+            </div>
+
+            <div class="rates_data div_two_columns">
+                <!-- This is the Average graduation rates-->
+                <div id="grad_rates">
+                    <h2>Viz graduation_rates</h2>
+                    <h6>Start with number</h6>
+                </div>
+
+                <!-- This is the Average desertion rates-->
+                <div id="desertion_rates">
+                    <h2>Viz desertion_rates</h2>
+                    <h6>Start with number</h6>
+                </div>
+            </div>
+        </div>
     </div>
-    <div> new div</div>
 
 
 </body>
