@@ -17,10 +17,10 @@ def automates_where_clause(kwargs):
     filters = []
 
     if min_year is not None:
-        filters.append(f"año_pedido >= {min_year}")
+        filters.append(f"año_solicitud >= {min_year}")
 
     if max_year is not None:
-        filters.append(f"año_pedido <= {max_year}")
+        filters.append(f"año_solicitud <= {max_year}")
 
     if regions:
         regions_sql = ", ".join(f"'{r}'" for r in regions)
@@ -82,7 +82,7 @@ def query_total_granted(
 
     # SQL query
     query = f"""
-        SELECT año_pedido as año,
+        SELECT año_solicitud as año,
             quintil as quintil,
             SUM(total_prestamos) as total_prestamos
         FROM read_parquet('{path_parquet}')

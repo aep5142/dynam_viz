@@ -192,17 +192,28 @@ def loads_cae_db(
         columns = [col.lower() for col in cae_df.columns]
         cae_df.columns = columns
         
-        col = cae_df["arancel_solicitado"]
+        col_solicitado = cae_df["arancel_solicitado"]
+        col_referencia = cae_df["arancel_referencia"]
 
         cae_df["arancel_solicitado"] = (
             pd.to_numeric(
-                col.astype(str)
+                col_solicitado.astype(str)
                 .str.replace(r"[^\d\-]", "", regex=True)  # elimina todo lo que no sea número o signo
                 .replace("", pd.NA)
                 , errors="coerce"
             ).astype("Int64")
             )
-
+        
+        cae_df["arancel_referencia"] = (
+            pd.to_numeric(
+                col_referencia.astype(str)
+                .str.replace(r"[^\d\-]", "", regex=True)  # elimina todo lo que no sea número o signo
+                .replace("", pd.NA)
+                , errors="coerce"
+            ).astype("Int64")
+            )
+        
+        cae_df["porcentaje_financiado"] = cae_df["arancel_solicitado"] / cae_df["arancel_referencia"]
         
         cae_df["año_operacion"] = (
             pd.to_numeric(cae_df["año_operacion"], errors="coerce")
