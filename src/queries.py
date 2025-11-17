@@ -202,5 +202,25 @@ def query_prob_graduation(
     return db.execute(query).fetchone()[0]
 
 
+def query_percentage_financed(
+    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+) -> int:
+    where_clause = automates_where_clause(kwargs)
+
+    # SQL query
+    query = f"""
+        SELECT AVG(
+            CASE WHEN porcentaje_financiado <=1 AND porcentaje_financiado > 0
+                THEN porcentaje_financiado END)
+            as porcentaje_financiado
+        FROM read_parquet('{path_parquet}')
+        {where_clause}
+    """
+
+    # Return scalar value
+    return db.execute(query).fetchone()[0]
+
+
+
 db = duckdb.connect()
-print(query_prob_graduation(db, regions=["REGION METROPOLITANA"]))
+print(query_percentage_financed(db))
