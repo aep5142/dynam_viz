@@ -36,7 +36,7 @@ def automates_where_clause(kwargs):
 # Helper 2: Watch the parquet db
 def query_view_db(
     db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
-) -> int:
+) -> pd.DataFrame:
     where_clause = automates_where_clause(kwargs)
 
     # SQL query
@@ -75,7 +75,7 @@ def query_total_borrowed(
 # ------------------------------------------------------------------------------
 
 
-def query_total_granted(
+def query_total_requests_granted(
     db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
 ) -> int:
     where_clause = automates_where_clause(kwargs)
@@ -223,4 +223,4 @@ def query_percentage_financed(
 
 
 db = duckdb.connect()
-print(query_percentage_financed(db))
+print(query_view_db(db)["quintil"].unique())
