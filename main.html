@@ -225,35 +225,69 @@
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
+// Loading the data to use it later. How can I load the data and then use it as a variable?
+
+mock_data = []
+
+d3.json("/data/mock_data.json").then(function(data) {
+    mock_data = data
+    d3.select("#total_borrowed")
+      .selectAll("p")
+      .data(data)
+      .join("p")
+      //.append("p")
+      .text(function(d) {
+          return "Region" + d.region + " --- Total borrowed:" + d.total_borrowed;
+      });
+});
+
+// -----------------------------------------------------------------------------
+//  THIS IS THE PART OF THE REGIONS SELECTION/UNSELECTION
+// -----------------------------------------------------------------------------
+// Functon to remove items from selected regions
+function removeRegion(arr, region) {
+  var index = arr.indexOf(region);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+
+// Starting Selected regions
+let selected_regions = []
+
+// Doing the part of changing colors of region and selecting them
 d3.selectAll("#map .unselected_region")   
   .on("mouseover", function(event, d) {
       const id = d3.select(this).attr("id");
-      console.log("Hovered Region:", id);
       d3.select("#hovered_region").text("You are over" + id);
   })
   .on("mouseout", function() {
       d3.select("#hovered_region").text("");
   })
   .on("click", function(event, d) {
-    d3.select(this).attr("class", "selected_region");
-    const region_name = d3.select(this).attr("id");
-    d3.select("#selected_region").text("Selected region: " + region_name);
-    console.log("Selected region:", region_name)
+    if (d3.select(this).attr("class") === "unselected_region") {
+        d3.select(this).attr("class", "selected_region");
+        const region_name = d3.select(this).attr("id");
+        selected_regions.push(region_name);
+        d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
+        console.log("Selected region:", region_name)
+    } else {
+        d3.select(this).attr("class", "unselected_region");
+        const region_name = d3.select(this).attr("id");
+        removeRegion(selected_regions, region_name)
+        console.log("UnSelected region:", region_name);
+        d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
+    }
   });
 
-d3.selectAll("#map .selected_region")
-    .on("click", function(event, d){
-        d3.select(this).attr("class", "unselected_region");
-        const name_unselect = d3.select(this).attr("id");
-        d3.select("#unselected_region").text("UnSelected region: " + region_name);
-        console.log("Unselected: ", name_unselect)
-    })
 
+
+// How to sum over values of json?
+// Notes of floating tooltip
 </script>
 <div id="hovered_region" style="margin-top:10px; font-weight:bold;"></div>
-<div id="selected_region" style="margin-top:10px; font-weight:bold;"></div>
-<div id="unselected_region" style="margin-top:10px; font-weight:bold;"></div>
-
+<div id="selected_regions" style="margin-top:10px; font-weight:bold;"></div>
 
 </body>
 
