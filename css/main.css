@@ -38,7 +38,7 @@ p {
 
 #map_section {
    background-color: transparent;
-   border: 3px solid yellow;
+   border: 3px solid red;
    margin: 1%;
    padding: 1%;
 }
@@ -52,4 +52,17 @@ p {
 
 #map {
    height:670px
+}
+
+.unselected_region {
+   fill: white;
+   fill-opacity: "1";
+   stroke-width: "0.5";
+   stroke: #868585;
+}
+
+.selected_region {
+   fill: rgb(133, 172, 250);
+   stroke-width: "10px";
+   stroke: black
 }
