@@ -66,3 +66,69 @@ p {
    stroke-width: "10px";
    stroke: black
 }
+
+#year_selection {
+   display: grid;
+   grid-template-columns: repeat(5, 1fr);
+   grid-template-rows: repeat(4, 1fr);
+   border: solid black;
+   margin: 10px;
+   place-items: center;
+}
+
+.unselected_year {
+   margin: 1px;
+   border: solid black;
+}
+
+.selected_year {
+   margin: 1px;
+   border: solid black;
+   background-color: lightcoral
+}
+
+#quintile_pyramid polygon.unselected_quintile {
+  fill: #f3f3f3;
+  stroke: #666;
+  stroke-width: 1;
+}
+
+#quintile_pyramid polygon.selected_quintile {
+  fill: #4a90e2;        /* active color */
+  stroke: #2b6fb2;
+}
+
+#quintile_pyramid .label {
+  fill: transparent;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+#gender_buttons {
+   width:300px;
+   height:200px;
+}
+
+.female_button_unselected {
+   fill: rgb(248, 200, 187);
+   stroke: #000;
+   stroke-width: 2px
+}
+
+.male_button_unselected {
+   fill: rgb(183, 221, 226);
+   stroke:#000;
+   stroke-width: 2px
+}
+
+.female_button_selected {
+   fill: #ed7c5cff;
+   stroke: #000;
+   stroke-width: 2px
+}
+
+.male_button_selected {
+   fill: #4b9ea8ff;
+   stroke:#000;
+   stroke-width: 2px
+}
