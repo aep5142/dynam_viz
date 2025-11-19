@@ -49,28 +49,11 @@
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1">
 
-                <defs>
-                        <style type="text/css">
-                            .unselected_quintile {
-                                fill: white;
-                                fill-opacity: 1;
-                                stroke-width: 0.5;
-                                stroke: #868585;
-                            }
-
-                            .label {
-                                font-family: Arial, sans-serif;
-                                font-size: 16px;
-                                fill: black;
-                            }
-                        </style>
-                    </defs>
-
                     <!-- Level 1 (bottom): Quintil 1 y 2 -->
                     <polygon class="unselected_quintile"
                             data-value = "quintil 1 y 2"
                             points="50,350 350,350 300,260 100,260"/>
-                    <text class="label" x="200" y="310"
+                    <text class="text_quintile" x="200" y="310"
                         text-anchor="middle"
                         dominant-baseline="middle">1st & 2nd Quintiles</text>
 
@@ -78,7 +61,7 @@
                     <polygon class="unselected_quintile"
                             data-value = "quintil 3"
                             points="100,260 300,260 260,190 140,190"/>
-                    <text class="label" x="200" y="225"
+                    <text class="text_quintile" x="200" y="225"
                         text-anchor="middle"
                         dominant-baseline="middle">3rd Quintile</text>
 
@@ -86,7 +69,7 @@
                     <polygon class="unselected_quintile"
                             data-value = "quintil 4"
                             points="140,190 260,190 230,130 170,130"/>
-                    <text class="label" x="200" y="160"
+                    <text class="text_quintile" x="200" y="160"
                         text-anchor="middle"
                         dominant-baseline="middle">4th Quintile</text>
 
@@ -94,7 +77,7 @@
                     <polygon class="unselected_quintile"
                             data-value = "quintil 5"
                             points="170,130 230,130 215,90 185,90"/>
-                    <text class="label" x="200" y="110"
+                    <text class="text_quintile" x="200" y="110"
                         text-anchor="middle"
                         dominant-baseline="middle">5th Quintile</text>
 
@@ -285,20 +268,30 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 
-// Loading total_borrowed data
-mock_data = []
 
-d3.json("/data/total_borrowed.json").then(function(data) {
-    mock_data = data
-    d3.select("#total_borrowed")
-      .selectAll("p")
-      .data(data)
-      .join("p")
-      //.append("p")
-      .text(function(d) {
-          return d.region + " --- Total borrowed:" + d.total_prestado;
-      });
-});
+// -----------------------------------------------------------------------------
+//  Constants
+// -----------------------------------------------------------------------------
+
+let all_years = [2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024]
+let all_genders = ["F", "M"]
+let all_quintiles = ["quintil 1 y 2", "quintil 3", "quintil 4", "quintil 5"]
+let all_regions = ['REGION DE VALPARAISO',
+                     'REGION DE LA ARAUCANIA',
+                     'REGION METROPOLITANA',
+                     'REGION DE LOS LAGOS',
+                    "REGION DEL LIB. B. O'HIGGINS",
+                    'REGION DEL BIO-BIO',
+                    'REGION DE LOS RIOS',
+                     'REGION DE ANTOFAGASTA',
+                      'REGION DE TARAPACA',
+                      'REGION DEL MAULE',
+                    'REGION DE COQUIMBO',
+                     'REGION DE ARICA Y PARINACOTA',
+                     'REGION DE AYSEN DEL G. C. IBAÑEZ',
+                     'REGION DE MAGALLANES Y LA ANTARTICA',
+                     'REGION DE ATACAMA',
+                     'REGION DE ÑUBLE']
 
 // -----------------------------------------------------------------------------
 //  FUNCTIONS
@@ -312,8 +305,69 @@ function removeRegion(arr, region) {
   return arr;
 }
 
-// Function to filter an object
+// Function to all values or selected ones
+function defineArray(arr, final_values) {
+    if (arr.length === 0) {
+        return final_values
+    } else{
+        return arr
+    }
+}
 
+// Function to check if a value is contained
+function iscontained(value, array) {
+    if (array.includes(value)) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// Function to all values or selected ones
+function sum_borrowed(data,
+                    selected_regions,
+                    selected_years,
+                    selected_genders,
+                    selected_quintiles,
+                    all_genders,
+                    all_quintiles,
+                    all_years,
+                    all_regions) {
+                        let final_sum = 0
+                        let regions_filter = defineArray(selected_regions, all_regions);
+                        let years_filter = defineArray(selected_years, all_years);
+                        let quintile_filter = defineArray(selected_quintiles, all_quintiles);
+                        let gender_filter = defineArray(selected_genders, all_genders);
+
+                        data.forEach(e => {
+                            if ((iscontained(e.region, regions_filter)) &&
+                            (iscontained(e.genero, gender_filter)) &&
+                            (iscontained(e.año_financiado, years_filter)) &&
+                            (iscontained(e.quintil, quintile_filter))) {
+                                console.log("added" + e.total_prestado)
+                                final_sum += e.total_prestado
+                            } 
+                        })
+                        return final_sum;
+                    }
+
+// function to update total_borrowed
+function update_total_borrowed() {
+    d3.select("#total_borrowed p")
+      .text(
+          sum_borrowed(
+              total_borrowed,
+              selected_regions,
+              selected_years,
+              selected_genders,
+              selected_quintiles,
+              all_genders,
+              all_quintiles,
+              all_years,
+              all_regions
+          )
+      );
+}
 
 // -----------------------------------------------------------------------------
 //  END FUNCTIONS
@@ -337,13 +391,15 @@ d3.selectAll("#map .unselected_region")
         const region_name = d3.select(this).attr("id");
         selected_regions.push(region_name);
         d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
-        console.log("Selected region:", region_name)
+        console.log("Selected region:", region_name);
+        update_total_borrowed()
     } else {
         d3.select(this).attr("class", "unselected_region");
         const region_name = d3.select(this).attr("id");
         removeRegion(selected_regions, region_name)
         console.log("UnSelected region:", region_name);
         d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
+        update_total_borrowed()
     }
   });
 
@@ -357,13 +413,15 @@ d3.selectAll("#map .unselected_region")
             const quintile_selected = d3.select(this).attr("data-value");
             selected_quintiles.push(quintile_selected);
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
-            console.log("Selected quintile:", quintile_selected)
+            console.log("Selected quintile:", quintile_selected);
+            update_total_borrowed()
         } else {
             d3.select(this).attr("class", "unselected_quintile");
             const quintile_selected = d3.select(this).attr("data-value");
             removeRegion(selected_quintiles, quintile_selected)
             console.log("Unselected quintile:", quintile_selected)
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
+            update_total_borrowed()
             }
 
         })
@@ -378,13 +436,15 @@ d3.selectAll("#map .unselected_region")
                 const selected_gender = d3.select(this).attr("data-value");
                 selected_genders.push(selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Selected gender:", selected_gender)
+                console.log("Selected gender:", selected_gender);
+                update_total_borrowed()
             } else {
                 d3.select(this).attr("class", "female_button_unselected");
                 const selected_gender = d3.select(this).attr("data-value");
                 removeRegion(selected_genders, selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Unselected gender:", selected_gender)
+                console.log("Unselected gender:", selected_gender);
+                update_total_borrowed()
                 }
 
             })
@@ -396,13 +456,15 @@ d3.selectAll("#map .unselected_region")
                 const selected_gender = d3.select(this).attr("data-value");
                 selected_genders.push(selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Selected gender:", selected_gender)
+                console.log("Selected gender:", selected_gender);
+                update_total_borrowed()
             } else {
                 d3.select(this).attr("class", "male_button_unselected");
                 const selected_gender = d3.select(this).attr("data-value");
                 removeRegion(selected_genders, selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Unselected gender:", selected_gender)
+                console.log("Unselected gender:", selected_gender);
+                update_total_borrowed()
                 }
 
             })
@@ -413,21 +475,36 @@ d3.selectAll("#map .unselected_region")
         .on("click", function(event, d) {
             if (d3.select(this).attr("class") === "unselected_year") {
                 d3.select(this).attr("class", "selected_year");
-                const year = d3.select(this).text()
+                const year = parseInt(d3.select(this).text())
                 selected_years.push(year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
-                console.log("Selected year:", year)
+                console.log("Selected year:", typeof(year));
+                update_total_borrowed()
             } else {
                 d3.select(this).attr("class", "unselected_year");
-                const year = d3.select(this).text()
+                const year = parseInt(d3.select(this).text())
                 removeRegion(selected_years, year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
-                console.log("Unselected year:", year)
+                console.log("Unselected year:", year);
+                update_total_borrowed()
                 }
 
             })
 
+// Loading total_borrowed data
+let total_borrowed = []
 
+d3.json("/data/total_borrowed.json").then(function(data) {
+    console.log("DATA LOADED:", data);
+    console.log("LENGTH:", data.length);
+    total_borrowed = data;
+    
+
+    d3.select("#total_borrowed")
+      .append("p")
+      .text("0")
+    update_total_borrowed()
+      });
 
 // How to sum over values of json?
 </script>
