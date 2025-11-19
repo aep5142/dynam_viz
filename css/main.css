@@ -98,7 +98,7 @@ p {
   stroke: #2b6fb2;
 }
 
-#quintile_pyramid .label {
+#quintile_pyramid .text_quintile {
   fill: transparent;
   font-family: sans-serif;
   font-size: 14px;
