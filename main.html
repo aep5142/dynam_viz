@@ -218,14 +218,12 @@
             <div class="macro_data div_two_columns">
                 <!-- This is the total granted requests section-->
                 <div id="total_caes_granted">
-                    <h2>Viz total requests</h2>
-                    <h6>Start with number</h6>
+                    <h2>Total CAEs granted</h2>
                 </div>
 
                 <!-- This is the total borrowed-->
                 <div id="total_borrowed">
-                    <h2>Viz total_borrowed</h2>
-                    <h6>Start with number</h6>
+                    <h2>Total Borrowed (new CAEs + Old Ones)</h2> <span>In 2024 US Dollars</span>
                 </div>
             </div>
 
@@ -385,7 +383,7 @@ function sumBorrowed(data,
                                 final_sum += e.total_prestado
                             } 
                         })
-                        return final_sum;
+                        return final_sum / 1000000;
                     }
 
 
