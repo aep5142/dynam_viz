@@ -217,7 +217,7 @@
             
             <div class="macro_data div_two_columns">
                 <!-- This is the total granted requests section-->
-                <div id="total_requests">
+                <div id="total_caes_granted">
                     <h2>Viz total requests</h2>
                     <h6>Start with number</h6>
                 </div>
@@ -323,50 +323,106 @@ function iscontained(value, array) {
     }
 }
 
-// Function to all values or selected ones
-function sum_borrowed(data,
-                    selected_regions,
+// Function to check arrays of regions, years, quintile and gender
+function filterArrays(selected_regions,
                     selected_years,
                     selected_genders,
                     selected_quintiles,
                     all_genders,
                     all_quintiles,
                     all_years,
-                    all_regions) {
+                    all_regions)
+                    {
                         let final_sum = 0
                         let regions_filter = defineArray(selected_regions, all_regions);
                         let years_filter = defineArray(selected_years, all_years);
                         let quintile_filter = defineArray(selected_quintiles, all_quintiles);
                         let gender_filter = defineArray(selected_genders, all_genders);
+                        return [regions_filter,
+                            years_filter,
+                            quintile_filter,
+                            gender_filter
+                        ]}
+
+
+// Function to all values or selected ones
+function totalCaesGranted(data,
+                    selectedFiltersArray,
+                    ) { 
+                        let caes_granted = 0
+                        let rs = selectedFiltersArray[0];
+                        let yrs = selectedFiltersArray[1];
+                        let qnt = selectedFiltersArray[2];
+                        let gnd = selectedFiltersArray[3];
 
                         data.forEach(e => {
-                            if ((iscontained(e.region, regions_filter)) &&
-                            (iscontained(e.genero, gender_filter)) &&
-                            (iscontained(e.año_financiado, years_filter)) &&
-                            (iscontained(e.quintil, quintile_filter))) {
-                                console.log("added" + e.total_prestado)
+                            if ((iscontained(e.region, rs)) &&
+                            (iscontained(e.año_financiado, yrs)) &&
+                            (iscontained(e.quintil, qnt)) &&
+                            (iscontained(e.genero, gnd))) {
+                                caes_granted += e.prestamos_entregados
+                            } 
+                        })
+                        return caes_granted;
+                    }
+
+
+// Function to sum all values total borrowed
+function sumBorrowed(data,
+                    selectedFiltersArray,
+                    ) { 
+                        let final_sum = 0
+                        let rs = selectedFiltersArray[0];
+                        let yrs = selectedFiltersArray[1];
+                        let qnt = selectedFiltersArray[2];
+                        let gnd = selectedFiltersArray[3];
+
+                        data.forEach(e => {
+                            if ((iscontained(e.region, rs)) &&
+                            (iscontained(e.año_financiado, yrs)) &&
+                            (iscontained(e.quintil, qnt)) &&
+                            (iscontained(e.genero, gnd))) {
                                 final_sum += e.total_prestado
                             } 
                         })
                         return final_sum;
                     }
 
+
+// function to update total_caes_granted
+function updateTotalCaesGranted(filters) {
+    d3.select("#total_caes_granted p")
+      .text(
+          totalCaesGranted(
+              total_caes_granted,
+              filters 
+          )
+      );
+}
+
+
 // function to update total_borrowed
-function update_total_borrowed() {
+function updateTotalBorrowed(filters) {
     d3.select("#total_borrowed p")
       .text(
-          sum_borrowed(
+          sumBorrowed(
               total_borrowed,
-              selected_regions,
+              filters 
+          )
+      );
+}
+
+function update_all() {
+    let filters = filterArrays(selected_regions,
               selected_years,
               selected_genders,
               selected_quintiles,
               all_genders,
               all_quintiles,
               all_years,
-              all_regions
-          )
-      );
+              all_regions);
+    updateTotalBorrowed(filters);
+    updateTotalCaesGranted(filters)
 }
 
 // -----------------------------------------------------------------------------
@@ -392,14 +448,14 @@ d3.selectAll("#map .unselected_region")
         selected_regions.push(region_name);
         d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
         console.log("Selected region:", region_name);
-        update_total_borrowed()
+        update_all()
     } else {
         d3.select(this).attr("class", "unselected_region");
         const region_name = d3.select(this).attr("id");
         removeRegion(selected_regions, region_name)
         console.log("UnSelected region:", region_name);
         d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
-        update_total_borrowed()
+        update_all()
     }
   });
 
@@ -414,14 +470,14 @@ d3.selectAll("#map .unselected_region")
             selected_quintiles.push(quintile_selected);
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
             console.log("Selected quintile:", quintile_selected);
-            update_total_borrowed()
+            update_all()
         } else {
             d3.select(this).attr("class", "unselected_quintile");
             const quintile_selected = d3.select(this).attr("data-value");
             removeRegion(selected_quintiles, quintile_selected)
             console.log("Unselected quintile:", quintile_selected)
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
-            update_total_borrowed()
+            update_all()
             }
 
         })
@@ -437,14 +493,14 @@ d3.selectAll("#map .unselected_region")
                 selected_genders.push(selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
                 console.log("Selected gender:", selected_gender);
-                update_total_borrowed()
+                update_all()
             } else {
                 d3.select(this).attr("class", "female_button_unselected");
                 const selected_gender = d3.select(this).attr("data-value");
                 removeRegion(selected_genders, selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
                 console.log("Unselected gender:", selected_gender);
-                update_total_borrowed()
+                update_all()
                 }
 
             })
@@ -457,14 +513,14 @@ d3.selectAll("#map .unselected_region")
                 selected_genders.push(selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
                 console.log("Selected gender:", selected_gender);
-                update_total_borrowed()
+                update_all()
             } else {
                 d3.select(this).attr("class", "male_button_unselected");
                 const selected_gender = d3.select(this).attr("data-value");
                 removeRegion(selected_genders, selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
                 console.log("Unselected gender:", selected_gender);
-                update_total_borrowed()
+                update_all()
                 }
 
             })
@@ -479,23 +535,38 @@ d3.selectAll("#map .unselected_region")
                 selected_years.push(year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
                 console.log("Selected year:", typeof(year));
-                update_total_borrowed()
+                update_all()
             } else {
                 d3.select(this).attr("class", "unselected_year");
                 const year = parseInt(d3.select(this).text())
                 removeRegion(selected_years, year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
                 console.log("Unselected year:", year);
-                update_total_borrowed()
+                update_all()
                 }
 
             })
 
 // Loading total_borrowed data
+let total_caes_granted = []
+
+d3.json("/data/total_cae_granted.json").then(function(data) {
+    console.log("CAES Granted LOADED:", data);
+    console.log("LENGTH:", data.length);
+    total_caes_granted = data;
+    
+
+    d3.select("#total_caes_granted")
+      .append("p")
+      .text("0")
+    updateTotalCaesGranted(filters)
+      });
+
+// Loading total_borrowed data
 let total_borrowed = []
 
 d3.json("/data/total_borrowed.json").then(function(data) {
-    console.log("DATA LOADED:", data);
+    console.log("Borrowed LOADED:", data);
     console.log("LENGTH:", data.length);
     total_borrowed = data;
     
@@ -503,11 +574,24 @@ d3.json("/data/total_borrowed.json").then(function(data) {
     d3.select("#total_borrowed")
       .append("p")
       .text("0")
-    update_total_borrowed()
+    updateTotalBorrowed(filters)
       });
 
-// How to sum over values of json?
+
+let filters = filterArrays(selected_regions,
+              selected_years,
+              selected_genders,
+              selected_quintiles,
+              all_genders,
+              all_quintiles,
+              all_years,
+              all_regions);
+update_all()
 </script>
+
+
+
+
 <div id="selected_regions" style="margin-top:10px; font-weight:bold;"></div>
 <div id="selected_quintiles" style="margin-top:10px; font-weight:bold;"></div>
 <div id="selected_genders" style="margin-top:10px; font-weight:bold;"></div>
