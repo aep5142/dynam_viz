@@ -230,8 +230,7 @@
             <div class="avg_lendee_data div_three_columns">
                 <!-- This is the Average loan section-->
                 <div id="avg_loan">
-                    <h2>Viz avg_loan</h2>
-                    <h6>Start with number</h6>
+                    <h2>Loan per student</h2> <span>In 2024 US Dollars (Avg.)</span>
                 </div>
 
                 <!-- This is the Average Financed years section-->
@@ -271,10 +270,10 @@
 //  Constants
 // -----------------------------------------------------------------------------
 
-let all_years = [2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024]
-let all_genders = ["F", "M"]
-let all_quintiles = ["quintil 1 y 2", "quintil 3", "quintil 4", "quintil 5"]
-let all_regions = ['REGION DE VALPARAISO',
+const all_years = [2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024]
+const all_genders = ["F", "M"]
+const all_quintiles = ["quintil 1 y 2", "quintil 3", "quintil 4", "quintil 5"]
+const all_regions = ['REGION DE VALPARAISO',
                      'REGION DE LA ARAUCANIA',
                      'REGION METROPOLITANA',
                      'REGION DE LOS LAGOS',
@@ -290,6 +289,8 @@ let all_regions = ['REGION DE VALPARAISO',
                      'REGION DE MAGALLANES Y LA ANTARTICA',
                      'REGION DE ATACAMA',
                      'REGION DE ÑUBLE']
+const million = 1000000
+
 
 // -----------------------------------------------------------------------------
 //  FUNCTIONS
@@ -343,7 +344,7 @@ function filterArrays(selected_regions,
                         ]}
 
 
-// Function to all values or selected ones
+// Function to sum all CAEs granted
 function totalCaesGranted(data,
                     selectedFiltersArray,
                     ) { 
@@ -383,7 +384,30 @@ function sumBorrowed(data,
                                 final_sum += e.total_prestado
                             } 
                         })
-                        return final_sum / 1000000;
+                        return final_sum / million;
+                    }
+
+// Function to calculate AVG LOAN
+function avgLoan(data,
+                    selectedFiltersArray,
+                    ) { 
+                        let money_borrowed_weighted = 0;
+                        let n_students = 0;
+                        let rs = selectedFiltersArray[0];
+                        let yrs = selectedFiltersArray[1];
+                        let qnt = selectedFiltersArray[2];
+                        let gnd = selectedFiltersArray[3];
+
+                        data.forEach(e => {
+                            if ((iscontained(e.region, rs)) &&
+                            (iscontained(e.año_entrega, yrs)) &&
+                            (iscontained(e.quintil, qnt)) &&
+                            (iscontained(e.genero, gnd))) {
+                                money_borrowed_weighted += (e.prestamo_promedio * e.prestamos_entregados);
+                                n_students += e.prestamos_entregados
+                            } 
+                        })
+                        return money_borrowed_weighted / n_students;
                     }
 
 
@@ -410,6 +434,17 @@ function updateTotalBorrowed(filters) {
       );
 }
 
+// function to update avg_loan
+function updateAvgLoan(filters) {
+    d3.select("#avg_loan p")
+      .text(
+          avgLoan(
+              avg_loans,
+              filters 
+          )
+      );
+}
+
 function update_all() {
     let filters = filterArrays(selected_regions,
               selected_years,
@@ -420,7 +455,8 @@ function update_all() {
               all_years,
               all_regions);
     updateTotalBorrowed(filters);
-    updateTotalCaesGranted(filters)
+    updateTotalCaesGranted(filters);
+    updateAvgLoan(filters)
 }
 
 // -----------------------------------------------------------------------------
@@ -545,7 +581,7 @@ d3.selectAll("#map .unselected_region")
 
             })
 
-// Loading total_borrowed data
+// Loading total_CAEs granted
 let total_caes_granted = []
 
 d3.json("/data/total_cae_granted.json").then(function(data) {
@@ -575,6 +611,22 @@ d3.json("/data/total_borrowed.json").then(function(data) {
     updateTotalBorrowed(filters)
       });
 
+// Loading total_CAEs granted
+let avg_loans = []
+
+d3.json("/data/avg_loan.json").then(function(data) {
+    console.log("AVG LOANS LOADED:", data);
+    console.log("LENGTH:", data.length);
+    avg_loans = data;
+    
+
+    d3.select("#avg_loan")
+      .append("p")
+      .text("0")
+    updateAvgLoan(filters)
+      });
+
+
 
 let filters = filterArrays(selected_regions,
               selected_years,
@@ -584,6 +636,8 @@ let filters = filterArrays(selected_regions,
               all_quintiles,
               all_years,
               all_regions);
+
+
 update_all()
 </script>
 
