@@ -584,7 +584,7 @@ d3.selectAll("#map .unselected_region")
 // Loading total_CAEs granted
 let total_caes_granted = []
 
-d3.json("/data/total_cae_granted.json").then(function(data) {
+d3.json("www/data/total_cae_granted.json").then(function(data) {
     console.log("CAES Granted LOADED:", data);
     console.log("LENGTH:", data.length);
     total_caes_granted = data;
@@ -599,7 +599,7 @@ d3.json("/data/total_cae_granted.json").then(function(data) {
 // Loading total_borrowed data
 let total_borrowed = []
 
-d3.json("/data/total_borrowed.json").then(function(data) {
+d3.json("www/data/total_borrowed.json").then(function(data) {
     console.log("Borrowed LOADED:", data);
     console.log("LENGTH:", data.length);
     total_borrowed = data;
@@ -614,7 +614,7 @@ d3.json("/data/total_borrowed.json").then(function(data) {
 // Loading total_CAEs granted
 let avg_loans = []
 
-d3.json("/data/avg_loan.json").then(function(data) {
+d3.json("www/data/avg_loan.json").then(function(data) {
     console.log("AVG LOANS LOADED:", data);
     console.log("LENGTH:", data.length);
     avg_loans = data;
