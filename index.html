@@ -410,6 +410,29 @@ function avgLoan(data,
                         return money_borrowed_weighted / n_students;
                     }
 
+// Function to calculate AVG FINANCED YEARS
+function avgFinancedYears(data,
+                    selectedFiltersArray,
+                    ) { 
+                        let yrs_fin = 0;
+                        let n_students = 0;
+                        let rs = selectedFiltersArray[0];
+                        let yrs = selectedFiltersArray[1];
+                        let qnt = selectedFiltersArray[2];
+                        let gnd = selectedFiltersArray[3];
+
+                        data.forEach(e => {
+                            if ((iscontained(e.region, rs)) &&
+                            (iscontained(e.año_entrega, yrs)) &&
+                            (iscontained(e.quintil, qnt)) &&
+                            (iscontained(e.genero, gnd))) {
+                                yrs_fin += (e.años_financiados * e.prestamos_entregados);
+                                n_students += e.prestamos_entregados
+                            } 
+                        })
+                        return yrs_fin / n_students;
+                    }
+
 
 // function to update total_caes_granted
 function updateTotalCaesGranted(filters) {
@@ -445,6 +468,17 @@ function updateAvgLoan(filters) {
       );
 }
 
+// function to update avg_financed_years
+function updateAvgFinancedYears(filters) {
+    d3.select("#avg_financed_years p")
+      .text(
+          avgFinancedYears(
+              financed_years,
+              filters 
+          )
+      );}
+
+
 function update_all() {
     let filters = filterArrays(selected_regions,
               selected_years,
@@ -456,7 +490,8 @@ function update_all() {
               all_regions);
     updateTotalBorrowed(filters);
     updateTotalCaesGranted(filters);
-    updateAvgLoan(filters)
+    updateAvgLoan(filters);
+    updateAvgFinancedYears(filters)
 }
 
 // -----------------------------------------------------------------------------
@@ -581,6 +616,11 @@ d3.selectAll("#map .unselected_region")
 
             })
 
+
+// -----------------------------------------------------------------------------
+//  LOAD THE DATA
+// -----------------------------------------------------------------------------
+
 // Loading total_CAEs granted
 let total_caes_granted = []
 
@@ -611,7 +651,7 @@ d3.json("www/data/total_borrowed.json").then(function(data) {
     updateTotalBorrowed(filters)
       });
 
-// Loading total_CAEs granted
+// Loading avg_loans
 let avg_loans = []
 
 d3.json("www/data/avg_loan.json").then(function(data) {
@@ -626,7 +666,24 @@ d3.json("www/data/avg_loan.json").then(function(data) {
     updateAvgLoan(filters)
       });
 
+// Loading total_CAEs granted
+let financed_years = []
 
+d3.json("www/data/financed_years.json").then(function(data) {
+    console.log("FINANCED YEARS LOADED:", data);
+    console.log("LENGTH:", data.length);
+    financed_years = data;
+    
+
+    d3.select("#avg_financed_years")
+      .append("p")
+      .text("0")
+    updateAvgFinancedYears(filters)
+      });
+
+// -----------------------------------------------------------------------------
+//  RUN THE PROGRAM
+// -----------------------------------------------------------------------------
 
 let filters = filterArrays(selected_regions,
               selected_years,
@@ -650,11 +707,6 @@ update_all()
 <div id="selected_years" style="margin-top:10px; font-weight:bold;"></div>
 
 </body>
-
-
-
-
-
 
 
 </html>
