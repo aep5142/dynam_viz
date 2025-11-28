@@ -13,34 +13,39 @@
         <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
     </div>
     
-    <div class="div_three_columns"> <!-- This is the div that will take some parameters-->
+    <div id="Titles of filters" class="div_three_columns"> <!-- This is the div that will write the titles of the filters-->
+        <div class="filter_title">Select Year(s)</div>
+        <div class="filter_title">Select Income Quintile(s)</div>
+        <div class="filter_title">Select Gender(s)</div>
+    </div>
+    <div id="filters" class="div_three_columns"> <!-- This is the div that will take some parameters-->
         <!-- This is the year selection range -->
-        <div id="year_selection">
-            <div class="unselected_year">2006</div>
-            <div class="unselected_year">2007</div>
-            <div class="unselected_year">2008</div>
-            <div class="unselected_year">2009</div>
-            <div class="unselected_year">2010</div>
-            <div class="unselected_year">2011</div>
-            <div class="unselected_year">2012</div>
-            <div class="unselected_year">2013</div>
-            <div class="unselected_year">2014</div>
-            <div class="unselected_year">2015</div>
-            <div class="unselected_year">2016</div>
-            <div class="unselected_year">2017</div>
-            <div class="unselected_year">2018</div>
-            <div class="unselected_year">2019</div>
-            <div class="unselected_year">2020</div>
-            <div class="unselected_year">2021</div>
-            <div class="unselected_year">2022</div>
-            <div class="unselected_year">2023</div>
-            <div class="unselected_year">2024</div>
+        <div id="year_selection" class="filter_square">
+            <div class="button_year unselected_year">2006</div>
+            <div class="button_year unselected_year">2007</div>
+            <div class="button_year unselected_year">2008</div>
+            <div class="button_year unselected_year">2009</div>
+            <div class="button_year unselected_year">2010</div>
+            <div class="button_year unselected_year">2011</div>
+            <div class="button_year unselected_year">2012</div>
+            <div class="button_year unselected_year">2013</div>
+            <div class="button_year unselected_year">2014</div>
+            <div class="button_year unselected_year">2015</div>
+            <div class="button_year unselected_year">2016</div>
+            <div class="button_year unselected_year">2017</div>
+            <div class="button_year unselected_year">2018</div>
+            <div class="button_year unselected_year">2019</div>
+            <div class="button_year unselected_year">2020</div>
+            <div class="button_year unselected_year">2021</div>
+            <div class="button_year unselected_year">2022</div>
+            <div class="button_year unselected_year">2023</div>
+            <div class="button_year unselected_year">2024</div>
             
         </div>
         
         
         <!-- This is the quintile selection range -->
-        <div>
+        <div id="quintile_selection" class="filter_square">
             <svg
                 id="quintile_pyramid"
                 viewBox="0 0 400 400"
@@ -85,17 +90,17 @@
         </div>
 
         <!-- This is the Gender selection range -->
-        <div>
-            <svg id="gender_buttons" viewBox="0 0 125 30" width="250" height="60">
+        <div id="gender_selection" class="filter_square">
+            <svg id="gender_buttons" viewBox="0 0 100 30" width="250" height="60">
                 <!-- Female button -->
-                <rect class="female_button_unselected" data-value="F" x="0" y="0" width="50" height="30"></rect>
+                <circle class="female_button_unselected" data-value="F" cx="25" cy="15" r="12"></circle>
                 <text x="25" y="15" text-anchor="middle" dominant-baseline="middle"
-                    font-family="Arial" font-size="10" fill="#000">Female</text>
+                    font-family="Calibri" font-size="7" fill="#000">Female</text>
 
                 <!-- Male button -->
-                <rect class="male_button_unselected" data-value="M" x="50" y="0" width="75" height="30"></rect>
-                <text x="87.5" y="15" text-anchor="middle" dominant-baseline="middle"
-                    font-family="Arial" font-size="10" fill="#000">Male</text>
+                <circle class="male_button_unselected" data-value="M" cx="75" cy="15" r="12"></circle>
+                <text x="75" y="15" text-anchor="middle" dominant-baseline="middle"
+                    font-family="Calibri" font-size="7" fill="#000">Male</text>
             </svg>
 </div>
 
@@ -105,7 +110,7 @@
             <!-- <img src="svgs/chile.svg" alt="chile"></img>
         </div> -->
     
-    <div id="main_grid_container">
+    <div id="main_grid_container" class="div_two_columns">
         <div id="map_section">
            <svg
                 width="130"
@@ -213,51 +218,56 @@
             </svg>
         </div>
         
-        <div id="data_section" class="div_three_rows">
+        <div id="data_section">
             
-            <div class="macro_data div_two_columns">
-                <!-- This is the total granted requests section-->
-                <div id="total_caes_granted">
-                    <h2>Total CAEs granted</h2>
+            <nav id="nav_bar" class="div_two_columns">
+                <a href="#cae_profile">CAE profile</a>
+                <a href="#grad_rates">Student Outcomes</a>
+            </nav>
+            
+            <div id="data_profile">
+                <div id="cae_profile" class="div_two_rows non_display">
+                    <div class="macro_data div_two_columns">
+                        <!-- This is the total granted requests section-->
+                        <div id="total_caes_granted">
+                            <h2>Total CAEs granted</h2>
+                        </div>
+
+                        <!-- This is the total borrowed-->
+                        <div id="total_borrowed">
+                            <h2>Total Borrowed (new CAEs + Old Ones)</h2> <span>In 2024 US Dollars (millions)</span>
+                        </div>
+                    </div>
+
+                    <div class="avg_lendee_data div_three_columns">
+                        <!-- This is the Average loan section-->
+                        <div id="avg_loan">
+                            <h2>Loan per student</h2> <span>In 2024 US Dollars (Avg.)</span>
+                        </div>
+
+                        <!-- This is the Average Financed years section-->
+                        <div id="avg_financed_years">
+                            <h2>Total Years Financed (Avg.)</h2>
+                        </div>
+
+                        <!-- This is the Average Percentage Financed section-->
+                        <div id="percentage_financed">
+                            <h2>Yearly tuition financed (Avg %)</h2>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- This is the total borrowed-->
-                <div id="total_borrowed">
-                    <h2>Total Borrowed (new CAEs + Old Ones)</h2> <span>In 2024 US Dollars (millions)</span>
-                </div>
+                <div id="grad_rates_div">
+                        <!-- This is the Average graduation rates-->
+                        <div id="grad_rates" class="non_display">
+                            <h2>Viz graduation_rates</h2>
+                        </div>
+                    </div>
             </div>
 
-            <div class="avg_lendee_data div_three_columns">
-                <!-- This is the Average loan section-->
-                <div id="avg_loan">
-                    <h2>Loan per student</h2> <span>In 2024 US Dollars (Avg.)</span>
-                </div>
-
-                <!-- This is the Average Financed years section-->
-                <div id="avg_financed_years">
-                    <h2>Total Years Financed (Avg.)</h2>
-                </div>
-
-                <!-- This is the Average Percentage Financed section-->
-                <div id="percentage_financed">
-                    <h2>Yearly tuition financed (Avg %)</h2>
-                </div>
-            </div>
-
-            <div class="rates_data div_two_columns">
-                <!-- This is the Average graduation rates-->
-                <div id="grad_rates">
-                    <h2>Viz graduation_rates</h2>
-                    <h6>Start with number</h6>
-                </div>
-
-                <!-- This is the Average desertion rates-->
-                <div id="desertion_rates">
-                    <h2>Viz desertion_rates</h2>
-                    <h6>Start with numbe2</h6>
-                </div>
             </div>
         </div>
+
     </div>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -454,60 +464,140 @@ function avgPercentFinanced(data,
                         return prct_fin / n_students;
                     }
 
+// Function to get rates of graduated, desertors, others.
+function calculateRatesOutcomes(data,
+                    selectedFiltersArray,
+                    ) { 
+                        let n_students = 0;
+                        
+                        graduates_direct = 0;
+                        graduates_direct_ratio = 0;
+                        
+                        graduates_frozen = 0;
+                        graduates_frozen_ratio = 0;
+
+                        desertor_direct = 0;
+                        desertor_direct_ratio = 0;
+
+                        desertor_frozen = 0;
+                        desertor_frozen_ratio = 0;
+
+                        graduates_change_program = 0;
+                        graduates_change_program_ratio = 0;
+
+                        desertor_change_program = 0;
+                        desertor_change_program_ratio = 0;
+
+                        let rs = selectedFiltersArray[0];
+                        let yrs = selectedFiltersArray[1];
+                        let qnt = selectedFiltersArray[2];
+                        let gnd = selectedFiltersArray[3];
+
+                        data.forEach(e => {
+                            if ((iscontained(e.region, rs)) &&
+                            (iscontained(e.año_entrega, yrs)) &&
+                            (iscontained(e.quintil, qnt)) &&
+                            (iscontained(e.genero, gnd))) {
+                                n_students += e.prestamos_entregados;
+
+                                graduates_direct += e.egresados_directo;
+                                graduates_direct_ratio = graduates_direct/n_students;
+                                
+                                graduates_frozen += e.egresados_congelado;
+                                graduates_frozen_ratio = graduates_frozen/n_students;
+
+                                desertor_direct += e.desertor_directo;
+                                desertor_direct_ratio = desertor_direct/n_students;
+
+                                desertor_frozen += e.desertor_congelado;
+                                desertor_frozen_ratio = desertor_frozen/n_students;
+
+                                graduates_change_program += e.egresados_cambio_carrera;
+                                graduates_change_program_ratio = graduates_change_program/n_students;
+
+                                desertor_change_program += e.desertor_cambio_carrera;
+                                desertor_change_program_ratio = desertor_change_program/n_students;
+
+
+                            } 
+                        })
+                        let final_values = {
+                            graduates_direct: graduates_direct_ratio,
+                            graduates_frozen:graduates_frozen_ratio,
+                            desertor_direct:desertor_direct_ratio,
+                            desertor_frozen:desertor_frozen_ratio,
+                            graduates_change_program: graduates_change_program_ratio,
+                            desertor_change_program: desertor_change_program_ratio
+                        }
+                        console.log(final_values)
+                        return final_values
+                    }
+
 
 // function to update total_caes_granted
 function updateTotalCaesGranted(filters) {
+    let val =totalCaesGranted(
+              total_caes_granted,
+              filters);
     d3.select("#total_caes_granted p")
       .text(
-          totalCaesGranted(
-              total_caes_granted,
-              filters 
+          val
           )
-      );
     }
 
 
 // function to update total_borrowed
 function updateTotalBorrowed(filters) {
-    d3.select("#total_borrowed p")
-      .text(
-          sumBorrowed(
+    let val = sumBorrowed(
               total_borrowed,
               filters 
-          )
+          );
+    d3.select("#total_borrowed p")
+      .text(
+          val
       );
     }
 
 // function to update avg_loan
 function updateAvgLoan(filters) {
-    d3.select("#avg_loan p")
-      .text(
-          avgLoan(
+    let val = avgLoan(
               avg_loans,
               filters 
-          )
+          );
+    d3.select("#avg_loan p")
+      .text(
+          val
       );
     }
 
 // function to update avg_financed_years
 function updateAvgFinancedYears(filters) {
-    d3.select("#avg_financed_years p")
-      .text(
-          avgFinancedYears(
+    let val = avgFinancedYears(
               financed_years,
               filters 
-          )
-      );
+          );
+    d3.select("#avg_financed_years p")
+      .text(val);
     }
 
 // function to update avg_financed_years
 function updateAvgPercentFinanced(filters) {
+    let val = avgPercentFinanced(
+              percentage_financed,
+              filters);
     d3.select("#percentage_financed p")
       .text(
-          avgPercentFinanced(
-              percentage_financed,
-              filters 
+          val 
           )
+      }
+
+// function to update avg_financed_years
+function updateRatesOutcome(filters) {
+    let val = calculateRatesOutcomes(
+              student_paths,
+              filters);
+    d3.select("#grad_rates p")
+      .text(val
       );}
 
 
@@ -524,7 +614,8 @@ function update_all() {
     updateTotalCaesGranted(filters);
     updateAvgLoan(filters);
     updateAvgFinancedYears(filters);
-    updateAvgPercentFinanced(filters)
+    updateAvgPercentFinanced(filters);
+    updateRatesOutcome(filters)
 }
 
 // -----------------------------------------------------------------------------
@@ -629,17 +720,17 @@ d3.selectAll("#map .unselected_region")
     // Doing the part of selecting quintiles
     let selected_years = []
 
-    d3.selectAll(".unselected_year")
+    d3.selectAll(".button_year.unselected_year")
         .on("click", function(event, d) {
-            if (d3.select(this).attr("class") === "unselected_year") {
-                d3.select(this).attr("class", "selected_year");
+            if (d3.select(this).attr("class") === "button_year unselected_year") {
+                d3.select(this).attr("class", "button_year selected_year");
                 const year = parseInt(d3.select(this).text())
                 selected_years.push(year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
                 console.log("Selected year:", typeof(year));
                 update_all()
             } else {
-                d3.select(this).attr("class", "unselected_year");
+                d3.select(this).attr("class", "button_year unselected_year");
                 const year = parseInt(d3.select(this).text())
                 removeRegion(selected_years, year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
@@ -648,6 +739,27 @@ d3.selectAll("#map .unselected_region")
                 }
 
             })
+        
+    // Hiding/Showing parts according to what the User is selecting
+    d3.select('a[href="#cae_profile"]').on("click", function(event) {
+        event.preventDefault(); // prevent jumping
+        let value_class = d3.select("#cae_profile").attr("class");
+        if (value_class === "div_two_rows non_display") {
+            d3.select("#cae_profile").attr("class", "div_two_rows display_element");
+            d3.select("#grad_rates").attr("class", "non_display")
+        }
+    }
+    );
+
+    d3.select('a[href="#grad_rates"]').on("click", function(event) {
+        event.preventDefault(); // prevent jumping
+        let value_class = d3.select("#grad_rates").attr("class");
+        if (value_class === "non_display") {
+            d3.select("#grad_rates").attr("class", "display_element");
+            d3.select("#cae_profile").attr("class", "div_two_rows non_display");
+        }
+    }
+    );
 
 
 // -----------------------------------------------------------------------------
@@ -727,6 +839,21 @@ d3.json("www/data/percent_financed.json").then(function(data) {
       .append("p")
       .text("0")
     updateAvgPercentFinanced(filters)
+      });
+
+// Loading student paths
+let student_paths = []
+
+d3.json("www/data/path_student.json").then(function(data) {
+    console.log("STUDENT PATHS LOADED:", data);
+    console.log("LENGTH:", data.length);
+    student_paths = data;
+    
+
+    d3.select("#grad_rates")
+      .append("p")
+      .text("0")
+    updateRatesOutcome(filters)
       });
 
 // -----------------------------------------------------------------------------
