@@ -143,7 +143,13 @@
 
                         <!-- This is the total borrowed-->
                         <div id="total_borrowed">
-                            <h2>Total Borrowed (new CAEs + Old Ones)</h2> <span>In 2024 US Dollars (millions)</span>
+                                <h2>Total Borrowed (new CAEs + Old Ones)</h2>
+                                <svg id="circle_money" viewBox="0 0 200 200">
+                                    <circle cx="100" cy="100" r="100"></circle>
+                                    <text class="holapepe" x="100" y="100">pedro</text>
+                                </svg>
+                                <p></p>
+                            
                         </div>
                     </div>
 
@@ -547,14 +553,22 @@ function updateTotalCaesGranted(filters) {
 
 // function to update total_borrowed
 function updateTotalBorrowed(filters) {
+    let max_value = 11900;
     let val = sumBorrowed(
               total_borrowed,
               filters 
           );
+    let new_radio = (val/max_value) * (100);
+    console.log("new radio is " + new_radio)
+    let formatted = val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0});
     d3.select("#total_borrowed p")
       .text(
-          val
+          "A total of " + formatted + " USD millions were loaned to students using CAE with your filters"
       );
+    d3.select("#circle_money circle")
+    .attr("r", new_radio);
+    d3.select("#circle_money text")
+    .text("US$" + formatted + " millions")
     }
 
 // function to update avg_loan
@@ -789,8 +803,7 @@ d3.json("www/data/total_borrowed.json").then(function(data) {
     total_borrowed = data;
     
 
-    d3.select("#total_borrowed")
-      .append("p")
+    d3.select("#total_borrowed p")
       .text("0")
     updateTotalBorrowed(filters)
       });
