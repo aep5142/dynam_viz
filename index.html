@@ -136,11 +136,11 @@
             
             <div id="data_profile">
                 <div id="cae_profile" class="div_two_rows display_element">
-                    <div class="macro_data div_two_columns">
+                    
                         <!-- This is the total granted requests section-->
                         <div id="total_caes_granted">
                             <h2>Total CAEs granted</h2>
-                            <svg id="total_caes_chart" width="350" height="300" viewBox="0 0 350 1300"></svg>
+                            <svg id="total_caes_chart" width="800" height="300"></svg>
                         </div>
 
                         <!-- This is the total borrowed-->
@@ -153,7 +153,7 @@
                                 <p></p>
                             
                         </div>
-                    </div>
+                    
                 </div>
 
                 <div id="avg_student" class="div_three_columns non_display">
@@ -555,16 +555,21 @@ function updateTotalCaesGranted(filters) {
         value: +value
     }));
 
+    const marginTop = 20;
+    const marginBottom = 20;
     const svg = d3.select("#total_caes_chart");
     const width = +svg.attr("width");
     const height = +svg.attr("height");
 
     const n = data.length;
-    const barWidth = width / n * 0.8;        // narrower bars
-    const barSpacing = width / n;            // spacing between bar starts
+    const maxBarWidth = 100; // pixels
+    const barWidth = Math.min(width / n * 0.8, maxBarWidth);
+    const barSpacing = width / n;
     const startOffset = (width - n * barSpacing) / 2; // CENTERING
+    const labelGap = 0; // pixels between top of bar and label
 
-    const maxValue = d3.max(data, d => d.value);
+
+    const maxValue = 94757;
 
     // ==== BARS =====================================================
     const bars = svg.selectAll("rect")
@@ -574,9 +579,9 @@ function updateTotalCaesGranted(filters) {
         .append("rect")
         .merge(bars)
         .attr("x", (d, i) => startOffset + i * barSpacing)
-        .attr("y", d => height - (d.value / maxValue) * height - 20)
+        .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue))
         .attr("width", barWidth)
-        .attr("height", d => (d.value / maxValue) * height)
+        .attr("height", d => (height - marginTop - marginBottom) * (d.value / maxValue))
         .attr("fill", "steelblue");
 
     bars.exit().remove();
@@ -585,16 +590,17 @@ function updateTotalCaesGranted(filters) {
     const valueLabels = svg.selectAll("text.value")
         .data(data);
 
+    // Value labels (on top of each bar)
     valueLabels.enter()
         .append("text")
         .attr("class", "value")
         .merge(valueLabels)
         .text(d => d.value.toLocaleString())
         .attr("x", (d, i) => startOffset + i * barSpacing + barWidth / 2)
-        .attr("y", d => height - (d.value / maxValue) * height - 25)
+        .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue) + 10)
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
-        .attr("fill", "black");
+        .attr("fill", "white");
 
     valueLabels.exit().remove();
 

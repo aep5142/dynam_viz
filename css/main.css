@@ -109,6 +109,13 @@ p {
    display: block;
 }
 
+#total_caes_granted {
+   display: grid;
+   grid-template-rows: 15% 85%;
+   place-items: center;
+   text-align: center;
+}
+
 #total_borrowed {
    display: grid;
    grid-template-rows: 15% 70% 15%;
