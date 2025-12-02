@@ -99,6 +99,26 @@ p {
    display: block;
 }
 
+#total_borrowed {
+   display: grid;
+   grid-template-rows: 15% 70% 15%;
+   place-items: center;
+   text-align: center;
+}
+
+#circle_money {
+   height: 10rem;
+   width: 10rem;
+   fill: #bbcbb4;
+   stroke: black
+}
+.holapepe {
+    fill: black;      /* Text color */
+    font-size: 20000;  /* Adjust relative to your viewBox */
+    text-anchor: middle; /* Center horizontally */
+    dominant-baseline: middle; /* Center vertically */
+}
+
 #filters {
    display: grid;
    grid-template-rows: 42.5% 42.5% 15%;
