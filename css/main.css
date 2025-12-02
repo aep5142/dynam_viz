@@ -23,6 +23,7 @@ p {
 .div_three_rows {
    display: grid;
    grid-template-rows: repeat(3, 1fr);
+   height: 90vh;
 }
 
 .div_two_rows {
@@ -33,7 +34,7 @@ p {
 .div_three_columns {
    display: grid;
    grid-template-columns: repeat(3, 1fr);
-   border-bottom: 1px solid gray;
+   border-bottom: 1px solid green;
 }
 
 .div_two_columns {

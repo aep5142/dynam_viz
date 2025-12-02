@@ -145,18 +145,15 @@
 
                         <!-- This is the total borrowed-->
                         <div id="total_borrowed">
-                                <h2>Total Borrowed (new CAEs + Old Ones)</h2>
-                                <svg id="circle_money" viewBox="0 0 200 200">
-                                    <circle cx="100" cy="100" r="100"></circle>
-                                    <text class="number_circle" x="100" y="100"></text>
-                                </svg>
-                                <p></p>
-                            
+                            <h2>Total Borrowed (new CAEs + Old Ones)</h2>
+                            <svg id="dots_total_borrowed" width="80%" height="100%">
+                                <text fill="black">Hola</text>
+                            </svg>
+                            <p></p>
                         </div>
-                    
                 </div>
 
-                <div id="avg_student" class="div_three_columns non_display">
+                <div id="avg_student" class="div_three_rows non_display">
                         <!-- This is the Average loan section-->
                         <div id="avg_loan">
                             <h2>Loan per student</h2> <span>In 2024 US Dollars (Avg.)</span>
@@ -276,10 +273,12 @@
         </div>
 
     </div>
+    <div width = "300px" height="400px">
+        
+     </div>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
-
 
 // -----------------------------------------------------------------------------
 //  Constants
@@ -623,26 +622,37 @@ function updateTotalCaesGranted(filters) {
 }
 
 
-
-// function to update total_borrowed
 function updateTotalBorrowed(filters) {
-    let max_value = 11900;
-    let val = sumBorrowed(
-              total_borrowed,
-              filters 
-          );
-    let new_radio = (val/max_value) * (100);
-    console.log("new radio is " + new_radio)
-    let formatted = val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0});
+    let total_dots = sumBorrowed(total_borrowed, filters);
+    let total_dots_int = Math.round(total_dots);
+    let formatted = total_dots_int.toLocaleString();
+
+    console.log(total_dots)
+
+    const svg = d3.select("#dots_total_borrowed");
+    const width = parseInt(svg.style("width"));
+    const height = parseInt(svg.style("height"));
+
+    const r = 1.2;
+    const spacing = 4;
+    const cols = Math.floor(width / spacing);
+
+    svg.selectAll("circle")
+       .data(d3.range(total_dots_int))
+       .join("circle")
+       .attr("cx", d => (d % cols) * spacing + r)
+       .attr("cy", d => Math.floor(d / cols) * spacing + r)
+       .attr("r", r)
+       .attr("fill", "steelblue");
+
     d3.select("#total_borrowed p")
       .text(
           "A total of " + formatted + " USD millions were loaned to students using CAE with your filters"
       );
-    d3.select("#circle_money circle")
-    .attr("r", new_radio);
-    d3.select("#circle_money text")
-    .text("US$" + formatted + " millions")
-    }
+
+    d3.select("#total_borrowed .number_circle")
+      .text("US$" + formatted + " millions");
+}
 
 // function to update avg_loan
 function updateAvgLoan(filters) {
