@@ -124,6 +124,10 @@ p {
    text-align: center;
 }
 
+.summary_total_borrowed {
+   font-weight: bold;
+}
+
 #circle_money {
    height: 10rem;
    width: 10rem;
