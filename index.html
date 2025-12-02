@@ -139,17 +139,22 @@
                     
                         <!-- This is the total granted requests section-->
                         <div id="total_caes_granted">
-                            <h2>Total CAEs granted</h2>
-                            <svg id="total_caes_chart" width="800" height="300"></svg>
+                            <h2 style="margin-top: 2rem;">Total CAEs granted</h2>
+                            <svg id="total_caes_chart" width="800" height="200"></svg>
                         </div>
 
                         <!-- This is the total borrowed-->
                         <div id="total_borrowed">
-                            <h2>Total Borrowed (new CAEs + Old Ones)</h2>
-                            <svg id="dots_total_borrowed" width="80%" height="100%">
-                                <text fill="black">Hola</text>
-                            </svg>
-                            <p></p>
+                            <h2 style="margin: 2rem;">Total Borrowed (new CAEs + Old Ones)</h2>
+
+                            <!-- Hidden canvas used for pixel sampling -->
+                            <canvas id="imageCanvas" width="900" height="300" style="display:none;"></canvas>
+
+                            <img id="dollarImage" src="svgs/US_one_dollar_bill,_obverse,_series_2009.jpg" style="display:none;">
+
+                            <svg id="dots_total_borrowed" width="900" height="300"></svg>
+
+                            <!-- <p class="summary_total_borrowed"></p> -->
                         </div>
                 </div>
 
@@ -627,32 +632,65 @@ function updateTotalBorrowed(filters) {
     let total_dots_int = Math.round(total_dots);
     let formatted = total_dots_int.toLocaleString();
 
-    console.log(total_dots)
-
     const svg = d3.select("#dots_total_borrowed");
-    const width = parseInt(svg.style("width"));
-    const height = parseInt(svg.style("height"));
+    const width = svg.node().getBoundingClientRect().width;
+    const height = svg.node().getBoundingClientRect().height;
 
-    const r = 1.2;
-    const spacing = 4;
+    const r = 1.80;        // dot radius
+    const spacing = 4.8;  // grid spacing
     const cols = Math.floor(width / spacing);
 
+    // Load image & canvas
+    const img = document.getElementById("dollarImage");
+    const canvas = document.getElementById("imageCanvas");
+    const ctx = canvas.getContext("2d");
+
+    img.onload = function() {
+    // Draw image into canvas
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // Generate dot data with sampled colors
+    let dots = d3.range(total_dots_int).map(d => {
+        const x = (d % cols) * spacing;
+        const y = Math.floor(d / cols) * spacing;
+
+        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        const color = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+
+        return { x, y, color };
+    });
+
+    // Draw dots
     svg.selectAll("circle")
-       .data(d3.range(total_dots_int))
-       .join("circle")
-       .attr("cx", d => (d % cols) * spacing + r)
-       .attr("cy", d => Math.floor(d / cols) * spacing + r)
-       .attr("r", r)
-       .attr("fill", "steelblue");
+        .data(dots)
+        .join("circle")
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .attr("r", r)
+        .attr("fill", d => d.color);
 
-    d3.select("#total_borrowed p")
-      .text(
-          "A total of " + formatted + " USD millions were loaned to students using CAE with your filters"
-      );
+    // ---- ADD TEXT AFTER DOTS ----
+    svg.selectAll("text.summary").remove();
 
-    d3.select("#total_borrowed .number_circle")
-      .text("US$" + formatted + " millions");
-}
+    svg.append("text")
+        .attr("class", "summary")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", "white")
+        .attr("font-size", "50px")
+        .attr("font-weight", "bold")
+        .style("paint-order", "stroke")
+        .style("stroke", "black")
+        .style("stroke-width", "6px")   // optional outline for readability
+        .text("US$" + formatted + " Millions");
+        };
+
+    // Ensure image loads even if cached
+    if (img.complete) img.onload();
+    }
+
 
 // function to update avg_loan
 function updateAvgLoan(filters) {
