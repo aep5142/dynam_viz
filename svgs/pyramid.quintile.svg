@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+    id="quintile_pyramid"
+    viewBox="0 0 400 400"
+    width="200"
+    height="200"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1">
+
+    <defs>
+        <style type="text/css">
+            .unselected_quintile {
+                fill: white;
+                fill-opacity: 1;
+                stroke-width: 0.5;
+                stroke: #868585;
+            }
+
+            .label {
+                font-family: Arial, sans-serif;
+                font-size: 16px;
+                fill: black;
+            }
+        </style>
+    </defs>
+
+    <!-- Level 1 (bottom): Quintil 1 y 2 -->
+    <polygon class="unselected_quintile"
+             points="50,350 350,350 300,260 100,260"/>
+    <text class="label" x="200" y="310"
+          text-anchor="middle"
+          dominant-baseline="middle">1st &amp; 2nd Quintiles</text>
+
+    <!-- Level 2: Quintil 3 -->
+    <polygon class="unselected_quintile"
+             points="100,260 300,260 260,190 140,190"/>
+    <text class="label" x="200" y="225"
+          text-anchor="middle"
+          dominant-baseline="middle">3rd Quintile</text>
+
+    <!-- Level 3: Quintil 4 -->
+    <polygon class="unselected_quintile"
+             points="140,190 260,190 230,130 170,130"/>
+    <text class="label" x="200" y="160"
+          text-anchor="middle"
+          dominant-baseline="middle">4th Quintile</text>
+
+    <!-- Level 4 (top): Quintil 5 -->
+    <polygon class="unselected_quintile"
+             points="170,130 230,130 215,90 185,90"/>
+    <text class="label" x="200" y="110"
+          text-anchor="middle"
+          dominant-baseline="middle">5th Quintile</text>
+
+</svg>
