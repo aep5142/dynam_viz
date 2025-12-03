@@ -134,11 +134,11 @@ p {
    fill: #bbcbb4;
    stroke: black
 }
-.number_circle {
-    fill: black;      /* Text color */
-    font-size: 20000;  /* Adjust relative to your viewBox */
-    text-anchor: middle; /* Center horizontally */
-    dominant-baseline: middle; /* Center vertically */
+
+#grad_rates_div {
+   place-items: center;
+   place-content: center;
+   text-align: center;
 }
 
 #filters {

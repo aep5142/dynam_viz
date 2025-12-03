@@ -178,8 +178,9 @@
 
                 <div id="grad_rates_div" class="non_display">
                         <!-- This is the Average graduation rates-->
-                        <div id="grad_rates" class="non_display">
+                        <div id="grad_rates">
                             <h2>Viz graduation_rates</h2>
+                            <div id="waffle_chart"></div>
                         </div>
                 </div>
             </div>
@@ -785,12 +786,48 @@ function updateAvgPercentFinanced(filters) {
 
 // function to update avg_financed_years
 function updateRatesOutcome(filters) {
-    let val = calculateRatesOutcomes(
+    let data = calculateRatesOutcomes(
               student_paths,
               filters);
-    d3.select("#grad_rates p")
-      .text(val
-      );}
+
+    // ---------- PREPARE WAFFLE DATA ----------
+    const totalSquares = 100;
+    const squareSize = 50;
+    const columns = 10;
+
+    let waffleData = [];
+    console.log(waffleData);
+    Object.entries(data).forEach(([k, v]) => {
+        const count = Math.round(v * totalSquares);
+        for (let i = 0; i < count; i++) waffleData.push({ category: k });
+    });
+
+    // Pad with empty cells if rounding < 100
+    while (waffleData.length < totalSquares) waffleData.push({ category: null });
+
+    // ---------- COLOR SCALE ----------
+    const color = d3.scaleOrdinal()
+        .domain(Object.keys(data))
+        .range(d3.schemeSet2); // Nice pastel colors
+
+    // ---------- DRAW ----------
+    d3.select("#waffle_chart").selectAll("svg").remove();
+    const svg = d3.select("#waffle_chart")
+        .append("svg")
+        .attr("width", columns * squareSize)
+        .attr("height", columns * squareSize);
+
+    svg.selectAll("rect")
+        .data(waffleData)
+        .enter()
+        .append("rect")
+        .attr("width", squareSize - 2)
+        .attr("height", squareSize - 2)
+        .attr("x", (d, i) => (i % columns) * squareSize)
+        .attr("y", (d, i) => Math.floor(i / columns) * squareSize)
+        .attr("fill", d => color(d.category))
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1)}
 
 
 function update_all() {
