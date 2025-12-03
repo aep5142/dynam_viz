@@ -477,8 +477,7 @@ function totalCaesGranted(data,
                             (iscontained(e.genero, gnd))) {
                                 caes_granted[e.año_financiado] += e.prestamos_entregados
                             } 
-                        })
-                        console.log(caes_granted)
+                        });
                         return caes_granted;
                     }
 
@@ -638,88 +637,165 @@ function calculateRatesOutcomes(data,
                             graduates_change_program: graduates_change_program_ratio,
                             desertor_change_program: desertor_change_program_ratio
                         }
-                        console.log(final_values)
                         return final_values
                     }
 
 
-// function to update total_caes_granted
-function updateTotalCaesGranted(filters) {
-    const dataObj = totalCaesGranted(total_caes_granted, filters);
+// Function to calculate total students
+function totalStudents(data, selectedFiltersArray) { 
+    
+            let students_data = [];
+            let rs = selectedFiltersArray[0];   // regions
+            let yrs = selectedFiltersArray[1];  // years
+            let qnt = selectedFiltersArray[2];  // quintiles
+            let gnd = selectedFiltersArray[3];  // gender
 
-    const data = Object.entries(dataObj).map(([year, value]) => ({
-        year: year,
-        value: +value
-    }));
+            // Initialize structure for each selected year
+            yrs.forEach(y => {
+                students_data.push({
+                    año: y,
+                    total_enrolled: 0,
+                    total_cae: 0,
+                    share_cae: 0
+                });
+            });
 
-    const marginTop = 20;
-    const marginBottom = 20;
+            // Loop through data and apply filters
+            data.forEach(row => {
+                if (
+                    iscontained(row.region, rs) &&
+                    iscontained(row.año, yrs) &&
+                    iscontained(row.quintil, qnt) &&
+                    iscontained(row.genero, gnd)
+                ) {
+                    // Find corresponding year bucket
+                    let bucket = students_data.find(d => d.año === row.año);
+
+                    if (bucket) {
+                        bucket.total_enrolled = row["total matrícula"];
+                        bucket.total_cae += row.total_students_cae;
+                    }
+                }
+            });
+
+            // Compute share_cae for each year
+            students_data.forEach(d => {
+                if (d.total_enrolled > 0) {
+                    d.share_cae = d.total_cae / d.total_enrolled;
+                }
+            });
+            return students_data;
+            }
+
+
+
+
+// Function to update stacked chart for total enrolled and CAE
+function updateTotalStudents(filters) {
+    // Get processed data
+    const students_data = totalStudents(total_students_data, filters); 
+
+    // Add non-CAE students for stacking
+    students_data.forEach(d => {
+        d.total_non_cae = d.total_enrolled - d.total_cae;
+    });
+
+    const keys = ["total_non_cae", "total_cae"]; // stack components
+
     const svg = d3.select("#total_caes_chart");
     const width = +svg.attr("width");
     const height = +svg.attr("height");
+    const marginTop = 20;
+    const marginBottom = 40; // leave space for year labels
 
-    const n = data.length;
-    const maxBarWidth = 100; // pixels
+    const n = students_data.length;
+    const maxBarWidth = 70;
     const barWidth = Math.min(width / n * 0.8, maxBarWidth);
     const barSpacing = width / n;
-    const startOffset = (width - n * barSpacing) / 2; // CENTERING
-    const labelGap = 0; // pixels between top of bar and label
 
+    // Scaling
+    const maxValue = d3.max(students_data, d => d.total_enrolled);
+    const yScale = d3.scaleLinear()
+        .domain([0, maxValue])
+        .range([0, height - marginTop - marginBottom]);
 
-    const maxValue = 94757;
+    // Color scale
+    const color = d3.scaleOrdinal()
+        .domain(keys)
+        .range(["#B6D6CC", "#77ACA2"]); // non-CAE / CAE
 
-    // ==== BARS =====================================================
-    const bars = svg.selectAll("rect")
-       .data(data);
+    // Prepare stack
+    const stack = d3.stack().keys(keys);
+    const series = stack(students_data);
 
-    bars.enter()
-        .append("rect")
-        .merge(bars)
+    // ===== TOOLTIP =====
+    let tooltip = d3.select("body").selectAll(".tooltip_stack").data([0])
+        .join("div")
+        .attr("class", "tooltip_stack")
+        .style("position", "absolute")
+        .style("padding", "6px")
+        .style("background", "rgba(0,0,0,0.7)")
+        .style("color", "white")
+        .style("border-radius", "4px")
+        .style("pointer-events", "none")
+        .style("display", "none");
+
+    // Centering fix
+    const startOffset = n > 1 ? (width - n * barSpacing) / 2 : (width - barWidth) / 2;
+    
+    // ===== DRAW STACKED BARS =====
+    const groups = svg.selectAll("g.layer")
+        .data(series, d => d.key)
+        .join(
+            enter => enter.append("g").attr("class", "layer").attr("fill", d => color(d.key)),
+            update => update,
+            exit => exit.remove()
+        );
+
+    groups.selectAll("rect")
+        .data(d => d, d => d.data.año)
+        .join("rect")
         .attr("x", (d, i) => startOffset + i * barSpacing)
-        .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue))
+        .attr("y", d => height - marginBottom - yScale(d[1]))
         .attr("width", barWidth)
-        .attr("height", d => (height - marginTop - marginBottom) * (d.value / maxValue))
-        .attr("fill", "#B6D6CC")
-        .attr("rx", "7");
+        .attr("height", d => yScale(d[1] - d[0]))
+        .attr("rx", 5)
+        .on("mouseover", (event, d) => {
+            const pct = (d.data.share_cae * 100).toFixed(2) + "%";
+            tooltip.style("display", "block")
+                   .html(`Share CAE: ${pct}`)
+                   .style("left", (event.pageX + 5) + "px")
+                   .style("top", (event.pageY - 25) + "px");
+        })
+        .on("mouseout", () => tooltip.style("display", "none"));
 
-    bars.exit().remove();
-
-    // ==== VALUE LABELS (on top of each bar) =========================
-    const valueLabels = svg.selectAll("text.value")
-        .data(data);
-
-    // Value labels (on top of each bar)
-    valueLabels.enter()
-        .append("text")
+    // ===== VALUE LABELS ON TOP OF CAE BARS =====
+    groups.selectAll("text.value")
+        .data(d => d, d => d.data.año)
+        .join("text")
         .attr("class", "value")
-        .merge(valueLabels)
-        .text(d => d.value.toLocaleString())
+        .text(d => d.key === "total_cae" ? d.data.total_cae.toLocaleString() : "")
         .attr("x", (d, i) => startOffset + i * barSpacing + barWidth / 2)
-        .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue) - 2)
+        .attr("y", d => height - marginBottom - yScale(d[1]) + 12) // 12 px padding inside bar
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
         .attr("fill", "black")
         .attr("font-weight", "bold");
 
-    valueLabels.exit().remove();
-
-    // ==== YEAR LABELS (under each bar) ==============================
+    // ===== YEAR LABELS =====
     const yearLabels = svg.selectAll("text.year")
-        .data(data);
-
-    yearLabels.enter()
-        .append("text")
+        .data(students_data)
+        .join("text")
         .attr("class", "year")
-        .merge(yearLabels)
-        .text(d => d.year)
+        .text(d => d.año)
         .attr("x", (d, i) => startOffset + i * barSpacing + barWidth / 2)
         .attr("y", height - 5)
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
         .attr("fill", "black");
-
-    yearLabels.exit().remove();
 }
+
+
 
 
 function updateTotalBorrowed(filters) {
@@ -907,8 +983,7 @@ function updateRatesOutcome(filters) {
         .attr("fill", d => colors[d.category])
         .attr("stroke", "#fff")
         .attr("stroke-width", 1);
-        console.log("wf" + waffleData)}
-
+        }
 
 function update_all() {
     let filters = filterArrays(selected_regions,
@@ -920,11 +995,11 @@ function update_all() {
               all_years,
               all_regions);
     updateTotalBorrowed(filters);
-    updateTotalCaesGranted(filters);
     updateAvgLoan(filters);
     updateAvgFinancedYears(filters);
     updateAvgPercentFinanced(filters);
-    updateRatesOutcome(filters)
+    updateRatesOutcome(filters);
+    updateTotalStudents(filters)
 }
 
 // -----------------------------------------------------------------------------
@@ -949,13 +1024,11 @@ d3.selectAll("#map .unselected_region")
         const region_name = d3.select(this).attr("id");
         selected_regions.push(region_name);
         d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
-        console.log("Selected region:", region_name);
         update_all()
     } else {
         d3.select(this).attr("class", "unselected_region");
         const region_name = d3.select(this).attr("id");
-        removeRegion(selected_regions, region_name)
-        console.log("UnSelected region:", region_name);
+        removeRegion(selected_regions, region_name);
         d3.select("#selected_regions").text("Selected regions: " + selected_regions.join(", "));
         update_all()
     }
@@ -1001,13 +1074,11 @@ d3.selectAll("#map .unselected_region")
             const quintile_selected = d3.select(this).attr("data-value");
             selected_quintiles.push(quintile_selected);
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
-            console.log("Selected quintile:", quintile_selected);
             update_all()
         } else {
             d3.select(this).attr("class", "unselected_quintile");
             const quintile_selected = d3.select(this).attr("data-value");
-            removeRegion(selected_quintiles, quintile_selected)
-            console.log("Unselected quintile:", quintile_selected)
+            removeRegion(selected_quintiles, quintile_selected);
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
             update_all()
             }
@@ -1024,14 +1095,12 @@ d3.selectAll("#map .unselected_region")
                 const selected_gender = d3.select(this).attr("data-value");
                 selected_genders.push(selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Selected gender:", selected_gender);
                 update_all()
             } else {
                 d3.select(this).attr("class", "female_button_unselected");
                 const selected_gender = d3.select(this).attr("data-value");
                 removeRegion(selected_genders, selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Unselected gender:", selected_gender);
                 update_all()
                 }
 
@@ -1044,14 +1113,12 @@ d3.selectAll("#map .unselected_region")
                 const selected_gender = d3.select(this).attr("data-value");
                 selected_genders.push(selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Selected gender:", selected_gender);
                 update_all()
             } else {
                 d3.select(this).attr("class", "male_button_unselected");
                 const selected_gender = d3.select(this).attr("data-value");
                 removeRegion(selected_genders, selected_gender);
                 d3.select("#selected_genders").text("Selected genders: " + selected_genders.join(", "));
-                console.log("Unselected gender:", selected_gender);
                 update_all()
                 }
 
@@ -1066,14 +1133,12 @@ d3.selectAll("#map .unselected_region")
                 const year = parseInt(d3.select(this).text())
                 selected_years.push(year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
-                console.log("Selected year:", typeof(year));
                 update_all()
             } else {
                 d3.select(this).attr("class", "button_year unselected_year");
                 const year = parseInt(d3.select(this).text())
                 removeRegion(selected_years, year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
-                console.log("Unselected year:", year);
                 update_all()
                 }
 
@@ -1156,7 +1221,7 @@ let total_caes_granted = []
 d3.json("www/data/total_cae_granted.json").then(function(data) {
     console.log("CAES Granted LOADED:", data);
     total_caes_granted = data;
-    updateTotalCaesGranted(filters)
+    // updateTotalCaesGranted(filters)
       });
 
 // Loading total_borrowed data
@@ -1164,7 +1229,6 @@ let total_borrowed = []
 
 d3.json("www/data/total_borrowed.json").then(function(data) {
     console.log("Borrowed LOADED:", data);
-    console.log("LENGTH:", data.length);
     total_borrowed = data;
     
 
@@ -1178,7 +1242,6 @@ let avg_loans = []
 
 d3.json("www/data/avg_loan.json").then(function(data) {
     console.log("AVG LOANS LOADED:", data);
-    console.log("LENGTH:", data.length);
     avg_loans = data;
     
 
@@ -1193,7 +1256,6 @@ let financed_years = []
 
 d3.json("www/data/financed_years.json").then(function(data) {
     console.log("FINANCED YEARS LOADED:", data);
-    console.log("LENGTH:", data.length);
     financed_years = data;
     
 
@@ -1208,7 +1270,6 @@ let percentage_financed = []
 
 d3.json("www/data/percent_financed.json").then(function(data) {
     console.log("PERCENT FINANCED LOADED:", data);
-    console.log("LENGTH:", data.length);
     percentage_financed = data;
     
 
@@ -1223,7 +1284,6 @@ let student_paths = []
 
 d3.json("www/data/path_student.json").then(function(data) {
     console.log("STUDENT PATHS LOADED:", data);
-    console.log("LENGTH:", data.length);
     student_paths = data;
     
 
@@ -1231,6 +1291,20 @@ d3.json("www/data/path_student.json").then(function(data) {
       .append("p")
       .text("0")
     updateRatesOutcome(filters)
+      });
+
+// total students
+let total_students_data = []
+
+d3.json("www/data/students_studying.json").then(function(data) {
+    console.log("students studying LOADED:", data);
+    total_students_data = data;
+    
+
+    d3.select("#grad_rates")
+      .append("p")
+      .text("0")
+    updateTotalStudents(filters)
       });
 
 // -----------------------------------------------------------------------------
