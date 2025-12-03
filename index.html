@@ -8,12 +8,83 @@
 </head>
 <body>
     <script src="js/main.js"></script> <!-- Here I'm importing the JS functions-->
-    <div> <!-- This is the div from the header title-->
-        <h1> Who do look like the financed people with CAE</h1>
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+    <nav id="main_nav" class="div_three_columns">
+        <a class="main_nav_item" href="#home" class="nav_option">Home</a>
+        <a class="main_nav_item" href="#about_cae"class="nav_option">About CAE</a>
+        <a class="main_nav_item" href="#main_grid_container" class="nav_option">Check CAE Interactives!</a>
+    </nav>
+    
+    <div id="home" class="display_element"> <!-- This is the div from the header title-->
+        <h1>Chile</h1>
+    </div>
+
+    <div id="about_cae" class="non_display">
+        <div class="container">
+
+            <img src="https://via.placeholder.com/900x350?text=Chile+Higher+Education" alt="Chile Higher Education">
+            <p class="caption">Chile’s expansion of higher education access led to major financing reforms in the 2000s.</p>
+
+            <h2>1. What is CAE?</h2>
+            <p>
+                The <strong>Crédito con Aval del Estado (CAE)</strong> is a student loan program created in Chile in 2005 
+                to expand access to higher education. The system is financed by private banks, but the government 
+                acts as a <strong>state guarantor</strong>, ensuring that students without financial collateral can still 
+                access long-term educational loans.
+            </p>
+
+            <h2>2. Historical Background</h2>
+            <p>
+                During the early 2000s, Chile experienced a rapid increase in demand for higher education. 
+                Universities and technical institutions expanded, but tuition costs rose sharply. Traditional 
+                financing tools, including limited scholarship programs and small public loans, were insufficient 
+                to support the growing number of students.
+            </p>
+            <p>
+                In response, the Chilean government introduced CAE in 2005. Its goal was to:
+                <ul>
+                    <li>Provide large-scale financing to students from middle- and lower-income households.</li>
+                    <li>Increase enrollment in universities and technical institutes.</li>
+                    <li>Share financial risk between the state, private banks, and students.</li>
+                </ul>
+            </p>
+
+            <img src="https://via.placeholder.com/900x350?text=Student+Loan+Expansion" alt="Student Loan Expansion">
+            <p class="caption">The CAE program helped Chile achieve one of the highest college enrollment rates in Latin America.</p>
+
+            <h2>3. Development and Evolution</h2>
+            <p>
+                Since its creation, CAE has undergone significant changes. Key developments include:
+                <ul>
+                    <li><strong>2006–2011:</strong> Rapid expansion of the program, with hundreds of thousands of new loans issued.</li>
+                    <li><strong>2012:</strong> Nationwide student protests pushed the government to reduce interest rates and improve repayment terms.</li>
+                    <li><strong>2016:</strong> Interest rates were capped at 2%, and repayment became income-dependent.</li>
+                    <li><strong>2020s:</strong> CAE became a central topic in educational reform discussions, especially regarding debt relief and the role of banks.</li>
+                </ul>
+            </p>
+
+            <img src="https://via.placeholder.com/900x350?text=Policy+Reform" alt="Policy Reform">
+            <p class="caption">Public debate about CAE has influenced multiple policy reforms over the last decade.</p>
+
+            <h2>4. Future Challenges</h2>
+            <p>
+                Today, CAE faces several important challenges:
+            </p>
+            <ul>
+                <li><strong>Debt Accumulation:</strong> Many graduates carry significant debt relative to their income, especially in low-paying fields.</li>
+                <li><strong>Administrative Complexity:</strong> The involvement of private banks, state guarantees, and multiple repayment schemes makes the system difficult for students to navigate.</li>
+                <li><strong>Equity Concerns:</strong> Students from lower-income families still rely disproportionately on loans rather than grants.</li>
+                <li><strong>Reform Pressure:</strong> Policymakers continue to debate replacing CAE with a fully public financing system.</li>
+            </ul>
+
+            <p>
+                As Chile advances toward new educational models, CAE remains a critical part of the conversation about how to 
+                balance access, affordability, and long-term fiscal sustainability.
+            </p>
+
+        </div>
     </div>
     
-    <div id="main_grid_container">
+    <div id="main_grid_container" class="non_display">
         <!-- This is the left section-->
         <div id="region_selection">
             <div class="filter_title">Select Region(s)</div>
@@ -142,9 +213,9 @@
                             <h2 style="margin-bottom: 2.5rem;">Total Borrowed (new CAEs + Old Ones)</h2>
 
                             <!-- Hidden canvas used for pixel sampling -->
-                            <canvas id="imageCanvas" width="900" height="310" style="display:none;"></canvas>
+                            <canvas id="imageCanvas" width="900" height="310" class="non_display"></canvas>
 
-                            <img id="dollarImage" src="svgs/US_one_dollar_bill,_obverse,_series_2009.jpg" style="display:none;">
+                            <img id="dollarImage" src="svgs/US_one_dollar_bill,_obverse,_series_2009.jpg" class="non_display">
 
                             <svg id="dots_total_borrowed" width="900" height="310"></svg>
 
@@ -1008,7 +1079,38 @@ d3.selectAll("#map .unselected_region")
 
             })
         
-    // Hiding/Showing parts according to what the User is selecting
+    // This is showing/hiding for the main pages
+    d3.select('a[href="#home"]').on("click", function(event) {
+        event.preventDefault();
+        d3.select("#home").classed("display_element", true)
+                                .classed("non_display", false);
+        d3.select("#about_cae").classed("display_element", false)
+                                .classed("non_display", true);
+        d3.select("#main_grid_container").classed("display_element", false)
+                                    .classed("non_display", true);
+    });
+
+    d3.select('a[href="#about_cae"]').on("click", function(event) {
+        event.preventDefault();
+        d3.select("#home").classed("display_element", false)
+                                .classed("non_display", true);
+        d3.select("#about_cae").classed("display_element", true)
+                                .classed("non_display", false);
+        d3.select("#main_grid_container").classed("display_element", false)
+                                    .classed("non_display", true);
+    });
+    
+    d3.select('a[href="#main_grid_container"]').on("click", function(event) {
+        event.preventDefault();
+        d3.select("#home").classed("display_element", false)
+                                .classed("non_display", true);
+        d3.select("#about_cae").classed("display_element", false)
+                                .classed("non_display", true);
+        d3.select("#main_grid_container").classed("display_element", true)
+                                    .classed("non_display", false);
+    });
+    
+    // This is showing/hiding for the main grid container of data
     // CAE Profile link
     d3.select('a[href="#cae_profile"]').on("click", function(event) {
         event.preventDefault();
@@ -1147,14 +1249,6 @@ let filters = filterArrays(selected_regions,
 
 update_all()
 </script>
-
-
-
-
-<div id="selected_regions" style="margin-top:10px; font-weight:bold;"></div>
-<div id="selected_quintiles" style="margin-top:10px; font-weight:bold;"></div>
-<div id="selected_genders" style="margin-top:10px; font-weight:bold;"></div>
-<div id="selected_years" style="margin-top:10px; font-weight:bold;"></div>
 
 </body>
 

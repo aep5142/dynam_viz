@@ -1,6 +1,9 @@
 body {
   font-family: "Calibri", "Segoe UI", sans-serif;
   background-color: white;
+  place-items: center;
+  text-align: center;
+  align-items: center;
 }
 
 h1 {
@@ -9,6 +12,32 @@ h1 {
 
 p {
   color: rgb(65, 65, 65);
+}
+
+a {
+   text-decoration: none;
+}
+
+#main_nav {
+   width: 50%;
+   height: 1%;
+   margin-top: 0rem;
+   text-align: center;
+   align-items: center;
+   background-color: white;
+   font-size: 1rem;
+   display: grid;
+   margin: 0 auto;
+}
+
+.main_nav_item {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   padding: 0;
+   margin: 0.5rem;
+   color: #5f6368;
+   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 #main_grid_container{
@@ -23,7 +52,6 @@ p {
 .div_three_rows {
    display: grid;
    grid-template-rows: repeat(3, 1fr);
-   height: 90vh;
 }
 
 .div_two_rows {
@@ -34,7 +62,6 @@ p {
 .div_three_columns {
    display: grid;
    grid-template-columns: repeat(3, 1fr);
-   border-bottom: 1px solid green;
 }
 
 .div_two_columns {
@@ -103,7 +130,7 @@ p {
 }
 
 .non_display {
-   display: none;
+   display: none !important;
 }
 
 .display_element {
@@ -128,11 +155,8 @@ p {
    font-weight: bold;
 }
 
-#circle_money {
-   height: 10rem;
-   width: 10rem;
-   fill: #bbcbb4;
-   stroke: black
+#dots_total_borrowed {
+   border: solid 0.5px lightgray;
 }
 
 #grad_rates_div {
