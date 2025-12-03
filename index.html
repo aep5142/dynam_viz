@@ -136,16 +136,10 @@
             
             <div id="data_profile">
                 <div id="cae_profile" class="div_two_rows display_element">
-                    
-                        <!-- This is the total granted requests section-->
-                        <div id="total_caes_granted">
-                            <h2 style="margin-top: 2rem;">Total CAEs granted</h2>
-                            <svg id="total_caes_chart" width="800" height="200"></svg>
-                        </div>
 
                         <!-- This is the total borrowed-->
                         <div id="total_borrowed">
-                            <h2 style="margin: 2rem;">Total Borrowed (new CAEs + Old Ones)</h2>
+                            <h2 style="margin-bottom: 2.5rem;">Total Borrowed (new CAEs + Old Ones)</h2>
 
                             <!-- Hidden canvas used for pixel sampling -->
                             <canvas id="imageCanvas" width="900" height="310" style="display:none;"></canvas>
@@ -156,6 +150,13 @@
 
                             <!-- <p class="summary_total_borrowed"></p> -->
                         </div>
+
+                        <!-- This is the total granted requests section-->
+                        <div id="total_caes_granted">
+                            <h2>Total CAEs granted</h2>
+                            <svg id="total_caes_chart" width="1000" height="170"></svg>
+                        </div>
+
                 </div>
 
                 <div id="avg_student" class="div_three_rows non_display">
@@ -586,7 +587,8 @@ function updateTotalCaesGranted(filters) {
         .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue))
         .attr("width", barWidth)
         .attr("height", d => (height - marginTop - marginBottom) * (d.value / maxValue))
-        .attr("fill", "steelblue");
+        .attr("fill", "#B6D6CC")
+        .attr("rx", "7");
 
     bars.exit().remove();
 
@@ -703,8 +705,8 @@ function updateTotalBorrowed(filters) {
             .attr("y", requiredHeight / 2)
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle")
-            .attr("fill", "white")
-            .attr("font-size", 30 + "px")
+            .attr("fill", "#8FB5A5")
+            .attr("font-size", 45 + "px")
             .attr("font-weight", "700")
             .style("paint-order", "stroke")
             .style("stroke", "black")
