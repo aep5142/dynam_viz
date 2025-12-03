@@ -224,34 +224,54 @@
                     version="1.1">
 
                         <!-- Level 1 (bottom): Quintil 1 y 2 -->
-                        <polygon class="unselected_quintile"
+                        <rect class="unselected_quintile"
                                 data-value = "quintil 1 y 2"
-                                points="50,350 350,350 300,260 100,260"/>
-                        <text class="text_quintile" x="200" y="310"
+                                width="360"
+                                height="90"
+                                x="20"
+                                y="310"
+                                rx="20"
+                                ry="20"/>
+                        <text class="text_quintile" x="200" y="355"
                             text-anchor="middle"
                             dominant-baseline="middle">1st & 2nd Quintiles</text>
 
                         <!-- Level 2: Quintil 3 -->
-                        <polygon class="unselected_quintile"
+                        <rect class="unselected_quintile"
                                 data-value = "quintil 3"
-                                points="100,260 300,260 260,190 140,190"/>
-                        <text class="text_quintile" x="200" y="225"
+                                width="320"
+                                height="90"
+                                x="40"
+                                y="210"
+                                rx="20"
+                                ry="20"/>
+                        <text class="text_quintile" x="200" y="255"
                             text-anchor="middle"
                             dominant-baseline="middle">3rd Quintile</text>
 
                         <!-- Level 3: Quintil 4 -->
-                        <polygon class="unselected_quintile"
+                        <rect class="unselected_quintile"
                                 data-value = "quintil 4"
-                                points="140,190 260,190 230,130 170,130"/>
-                        <text class="text_quintile" x="200" y="160"
+                                width="280"
+                                height="90"
+                                x="60"
+                                y="110"
+                                rx="20"
+                                ry="20"/>
+                        <text class="text_quintile" x="200" y="155"
                             text-anchor="middle"
                             dominant-baseline="middle">4th Quintile</text>
 
                         <!-- Level 4 (top): Quintil 5 -->
-                        <polygon class="unselected_quintile"
-                                data-value = "quintil 5"
-                                points="170,130 230,130 215,90 185,90"/>
-                        <text class="text_quintile" x="200" y="110"
+                        <rect class="unselected_quintile"
+                                data-value = "quintil 4"
+                                width="240"
+                                height="90"
+                                x="80"
+                                y="10"
+                                rx="20"
+                                ry="20"/>
+                        <text class="text_quintile" x="200" y="55"
                             text-anchor="middle"
                             dominant-baseline="middle">5th Quintile</text>
 
@@ -606,7 +626,8 @@ function updateTotalCaesGranted(filters) {
         .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue) - 2)
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
-        .attr("fill", "black");
+        .attr("fill", "black")
+        .attr("font-weight", "bold");
 
     valueLabels.exit().remove();
 
