@@ -794,6 +794,14 @@ function updateRatesOutcome(filters) {
     const totalSquares = 100;
     const squareSize = 50;
     const columns = 10;
+    let colors = {
+            graduates_direct: "#77ACA2",
+            graduates_frozen: "#9DBEBB",
+            desertor_direct: "#FF82A9",
+            desertor_frozen: "#FFC0BE",
+            graduates_change_program: "#BBB5BD",
+            desertor_change_program: "#AA6DA3"
+                };
 
     let waffleData = [];
     console.log(waffleData);
@@ -825,9 +833,10 @@ function updateRatesOutcome(filters) {
         .attr("height", squareSize - 2)
         .attr("x", (d, i) => (i % columns) * squareSize)
         .attr("y", (d, i) => Math.floor(i / columns) * squareSize)
-        .attr("fill", d => color(d.category))
+        .attr("fill", d => colors[d.category])
         .attr("stroke", "#fff")
-        .attr("stroke-width", 1)}
+        .attr("stroke-width", 1);
+        console.log("wf" + waffleData)}
 
 
 function update_all() {
