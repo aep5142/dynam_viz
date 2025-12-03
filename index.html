@@ -148,11 +148,11 @@
                             <h2 style="margin: 2rem;">Total Borrowed (new CAEs + Old Ones)</h2>
 
                             <!-- Hidden canvas used for pixel sampling -->
-                            <canvas id="imageCanvas" width="900" height="300" style="display:none;"></canvas>
+                            <canvas id="imageCanvas" width="900" height="310" style="display:none;"></canvas>
 
                             <img id="dollarImage" src="svgs/US_one_dollar_bill,_obverse,_series_2009.jpg" style="display:none;">
 
-                            <svg id="dots_total_borrowed" width="900" height="300"></svg>
+                            <svg id="dots_total_borrowed" width="900" height="310"></svg>
 
                             <!-- <p class="summary_total_borrowed"></p> -->
                         </div>
@@ -601,10 +601,10 @@ function updateTotalCaesGranted(filters) {
         .merge(valueLabels)
         .text(d => d.value.toLocaleString())
         .attr("x", (d, i) => startOffset + i * barSpacing + barWidth / 2)
-        .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue) + 10)
+        .attr("y", d => marginTop + (height - marginTop - marginBottom) * (1 - d.value / maxValue) - 2)
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
-        .attr("fill", "white");
+        .attr("fill", "black");
 
     valueLabels.exit().remove();
 
@@ -633,63 +633,98 @@ function updateTotalBorrowed(filters) {
     let formatted = total_dots_int.toLocaleString();
 
     const svg = d3.select("#dots_total_borrowed");
-    const width = svg.node().getBoundingClientRect().width;
-    const height = svg.node().getBoundingClientRect().height;
+    // get rendered width (in px)
+    const width = 900;
 
-    const r = 1.80;        // dot radius
-    const spacing = 4.8;  // grid spacing
-    const cols = Math.floor(width / spacing);
+    // dot/grid params
+    const r = 1.70;        // dot radius
+    const spacing = 4.8;   // center-to-center spacing
+    const cols = Math.max(1, Math.floor(width / spacing)); // at least 1 column
 
-    // Load image & canvas
-    const img = document.getElementById("dollarImage");
+    // compute rows and required height
+    const rows = Math.ceil(total_dots_int / cols);
+    const requiredHeight = 311
+
+    // === resize svg and make sure overflow is visible ===
+    svg.attr("height", requiredHeight);
+    // also set viewBox so coordinates are predictable and scale correctly
+    svg.attr("viewBox", `0 0 ${width} ${requiredHeight}`);
+    svg.style("overflow", "visible");
+
+    // Ensure the hidden canvas matches the same pixel dimensions used for sampling
     const canvas = document.getElementById("imageCanvas");
+    canvas.width = width;
+    canvas.height = requiredHeight;
     const ctx = canvas.getContext("2d");
 
-    img.onload = function() {
-    // Draw image into canvas
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    // Load the image and draw it into the canvas sized to the canvas
+    const img = document.getElementById("dollarImage");
 
-    // Generate dot data with sampled colors
-    let dots = d3.range(total_dots_int).map(d => {
-        const x = (d % cols) * spacing;
-        const y = Math.floor(d / cols) * spacing;
+    function renderFromImage() {
+        // clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // draw image stretched to canvas size (so sampling matches svg positions)
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const pixel = ctx.getImageData(x, y, 1, 1).data;
-        const color = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+        // Prepare dots (sample colors)
+        const n = total_dots_int;
+        const dots = new Array(n);
+        for (let d = 0; d < n; d++) {
+            const x = (d % cols) * spacing + r; // +r to avoid edge clipping on left/top
+            const y = Math.floor(d / cols) * spacing + r;
 
-        return { x, y, color };
-    });
+            // clamp sampling coordinates inside canvas bounds
+            const sx = Math.min(Math.max(Math.round(x), 0), canvas.width - 1);
+            const sy = Math.min(Math.max(Math.round(y), 0), canvas.height - 1);
 
-    // Draw dots
-    svg.selectAll("circle")
-        .data(dots)
-        .join("circle")
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .attr("r", r)
-        .attr("fill", d => d.color);
+            const pixel = ctx.getImageData(sx, sy, 1, 1).data;
+            const color = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
 
-    // ---- ADD TEXT AFTER DOTS ----
-    svg.selectAll("text.summary").remove();
+            dots[d] = { x, y, color };
+        }
 
-    svg.append("text")
-        .attr("class", "summary")
-        .attr("x", width / 2)
-        .attr("y", height / 2)
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .attr("fill", "white")
-        .attr("font-size", "50px")
-        .attr("font-weight", "bold")
-        .style("paint-order", "stroke")
-        .style("stroke", "black")
-        .style("stroke-width", "6px")   // optional outline for readability
-        .text("US$" + formatted + " Millions");
-        };
+        // DRAW: remove old, draw new circles
+        svg.selectAll("circle").remove();
 
-    // Ensure image loads even if cached
-    if (img.complete) img.onload();
+        svg.selectAll("circle")
+            .data(dots)
+            .join("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", r)
+            .attr("fill", d => d.color)
+            .attr("opacity", 1);
+
+        // Put summary text on top
+        svg.selectAll("text.summary").remove();
+        svg.append("text")
+            .attr("class", "summary")
+            .attr("x", width / 2)
+            .attr("y", requiredHeight / 2)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "middle")
+            .attr("fill", "white")
+            .attr("font-size", 30 + "px")
+            .attr("font-weight", "700")
+            .style("paint-order", "stroke")
+            .style("stroke", "black")
+            .style("stroke-width", "6px")
+            .text("US$" + formatted + " Millions");
+            console.log("w:" + width + " height: " + requiredHeight)
     }
+
+    // If image already loaded (cached), call directly; otherwise wait for onload
+    if (img.complete && img.naturalWidth !== 0) {
+        renderFromImage();
+    } else {
+        img.onload = () => renderFromImage();
+    }
+
+    // update the small paragraph (outside svg)
+    d3.select("#total_borrowed p")
+      .text("US$" + formatted + " millions were loaned to students according to your filters");
+}
+
 
 
 // function to update avg_loan

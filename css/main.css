@@ -1,6 +1,6 @@
 body {
-  background-color: rgb(246, 246, 246);
   font-family: "Calibri", "Segoe UI", sans-serif;
+  background-color: white;
 }
 
 h1 {
@@ -13,7 +13,7 @@ p {
 
 #main_grid_container{
    display: grid;
-   background-color: transparent;
+   background-color: white;
    border: 10px solid gray;
    margin: 2rem;
    height: 45rem;
