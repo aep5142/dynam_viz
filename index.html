@@ -225,7 +225,7 @@
                         <!-- This is the total granted requests section-->
                         <div id="total_caes_granted">
                             <h2>Total CAEs granted</h2>
-                            <svg id="total_caes_chart" width="1000" height="170"></svg>
+                            <svg id="total_caes_chart" width="700" height="200"></svg>
                         </div>
 
                 </div>
@@ -282,16 +282,6 @@
                     <div class="button_year unselected_year">2014</div>
                     <div class="button_year unselected_year">2024</div>
                     <div class="button_year unselected_year">2015</div>
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                 </div>
             </div>
             
@@ -709,23 +699,26 @@ function updateTotalStudents(filters) {
         d.total_non_cae = d.total_enrolled - d.total_cae;
     });
 
-    const keys = ["total_non_cae", "total_cae"]; // stack components
+    const keys = ["total_cae", "total_non_cae",]; // stack components
 
     const svg = d3.select("#total_caes_chart");
     const width = +svg.attr("width");
     const height = +svg.attr("height");
     const marginTop = 20;
     const marginBottom = 40; // leave space for year labels
+    console.log("h: "+ height + " margintop: " + marginTop + " margin_bottom: " + marginBottom);
 
     const n = students_data.length;
     const maxBarWidth = 70;
     const barWidth = Math.min(width / n * 0.8, maxBarWidth);
     const barSpacing = width / n;
+    
 
     // Scaling
     const maxValue = d3.max(students_data, d => d.total_enrolled);
+    const min_value_y_axis = d3.min(students_data, d => d.total_enrolled);
     const yScale = d3.scaleLinear()
-        .domain([0, maxValue])
+        .domain([min_value_y_axis, maxValue])
         .range([0, height - marginTop - marginBottom]);
 
     // Color scale
@@ -735,7 +728,11 @@ function updateTotalStudents(filters) {
 
     // Prepare stack
     const stack = d3.stack().keys(keys);
-    const series = stack(students_data);
+    let series = stack(students_data);
+
+    // Ensure CAE is visually below non-CAE
+    series = series.reverse();
+
 
     // ===== TOOLTIP =====
     let tooltip = d3.select("body").selectAll(".tooltip_stack").data([0])
@@ -745,7 +742,7 @@ function updateTotalStudents(filters) {
         .style("padding", "6px")
         .style("background", "rgba(0,0,0,0.7)")
         .style("color", "white")
-        .style("border-radius", "4px")
+        .style("border-radius", "1px")
         .style("pointer-events", "none")
         .style("display", "none");
 
@@ -767,12 +764,18 @@ function updateTotalStudents(filters) {
         .attr("x", (d, i) => startOffset + i * barSpacing)
         .attr("y", d => height - marginBottom - yScale(d[1]))
         .attr("width", barWidth)
-        .attr("height", d => yScale(d[1] - d[0]))
+        .attr("height", d => {
+            const stackedValue = d[1] - d[0];
+            return yScale(d[1]) - yScale(d[0]);
+            })
+        .attr("y", d => height - marginBottom - yScale(d[1]))
         .attr("rx", 5)
         .on("mouseover", (event, d) => {
             const pct = (d.data.share_cae * 100).toFixed(2) + "%";
+            const total_enrolled = d.data.total_enrolled.toLocaleString();
+            const total_cae = d.data.total_cae.toLocaleString();
             tooltip.style("display", "block")
-                   .html(`Share CAE: ${pct}`)
+                   .html(`Share CAE: ${pct}<br>Total Enrolled: ${total_enrolled}<br>Total CAE: ${total_cae}`)
                    .style("left", (event.pageX + 5) + "px")
                    .style("top", (event.pageY - 25) + "px");
         })
@@ -798,11 +801,12 @@ function updateTotalStudents(filters) {
         .attr("class", "year")
         .text(d => d.año)
         .attr("x", (d, i) => startOffset + i * barSpacing + barWidth / 2)
-        .attr("y", height - 5)
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
-        .attr("fill", "black");
+        .attr("fill", "black")
+        .attr("y", height - 5);
 }
+        
 
 
 
