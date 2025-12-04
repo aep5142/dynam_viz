@@ -264,24 +264,33 @@
 
                 <div id="years_options" class="filter_square">
                     <div class="button_year unselected_year">2006</div>
-                    <div class="button_year unselected_year">2007</div>
-                    <div class="button_year unselected_year">2008</div>
-                    <div class="button_year unselected_year">2009</div>
-                    <div class="button_year unselected_year">2010</div>
-                    <div class="button_year unselected_year">2011</div>
-                    <div class="button_year unselected_year">2012</div>
-                    <div class="button_year unselected_year">2013</div>
-                    <div class="button_year unselected_year">2014</div>
-                    <div class="button_year unselected_year">2015</div>
                     <div class="button_year unselected_year">2016</div>
+                    <div class="button_year unselected_year">2007</div>
                     <div class="button_year unselected_year">2017</div>
+                    <div class="button_year unselected_year">2008</div>
                     <div class="button_year unselected_year">2018</div>
+                    <div class="button_year unselected_year">2009</div>
                     <div class="button_year unselected_year">2019</div>
+                    <div class="button_year unselected_year">2010</div>
                     <div class="button_year unselected_year">2020</div>
+                    <div class="button_year unselected_year">2011</div>
                     <div class="button_year unselected_year">2021</div>
+                    <div class="button_year unselected_year">2012</div>
                     <div class="button_year unselected_year">2022</div>
+                    <div class="button_year unselected_year">2013</div>
                     <div class="button_year unselected_year">2023</div>
+                    <div class="button_year unselected_year">2014</div>
                     <div class="button_year unselected_year">2024</div>
+                    <div class="button_year unselected_year">2015</div>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     
                 </div>
             </div>
@@ -336,7 +345,7 @@
 
                         <!-- Level 4 (top): Quintil 5 -->
                         <rect class="unselected_quintile"
-                                data-value = "quintil 4"
+                                data-value = "quintil 5"
                                 width="240"
                                 height="90"
                                 x="80"
@@ -444,7 +453,7 @@ function filterArrays(selected_regions,
                     all_years,
                     all_regions)
                     {
-                        let final_sum = 0
+                        let final_sum = 0;
                         let regions_filter = defineArray(selected_regions, all_regions);
                         let years_filter = defineArray(selected_years, all_years);
                         let quintile_filter = defineArray(selected_quintiles, all_quintiles);
@@ -486,7 +495,7 @@ function totalCaesGranted(data,
 function sumBorrowed(data,
                     selectedFiltersArray,
                     ) { 
-                        let final_sum = 0
+                        let final_sum = 0;
                         let rs = selectedFiltersArray[0];
                         let yrs = selectedFiltersArray[1];
                         let qnt = selectedFiltersArray[2];
@@ -499,7 +508,7 @@ function sumBorrowed(data,
                             (iscontained(e.genero, gnd))) {
                                 final_sum += e.total_prestado
                             } 
-                        })
+                        });
                         return final_sum / million;
                     }
 
@@ -800,8 +809,10 @@ function updateTotalStudents(filters) {
 
 function updateTotalBorrowed(filters) {
     let total_dots = sumBorrowed(total_borrowed, filters);
+    console.log("total dots are " + total_dots)
     let total_dots_int = Math.round(total_dots);
     let formatted = total_dots_int.toLocaleString();
+    console.log("formatted is" + formatted);
 
     const svg = d3.select("#dots_total_borrowed");
     // get rendered width (in px)
@@ -881,8 +892,7 @@ function updateTotalBorrowed(filters) {
             .style("stroke", "black")
             .style("stroke-width", "6px")
             .text("US$" + formatted + " Millions");
-            console.log("w:" + width + " height: " + requiredHeight)
-    }
+        }
 
     // If image already loaded (cached), call directly; otherwise wait for onload
     if (img.complete && img.naturalWidth !== 0) {
@@ -1068,7 +1078,7 @@ d3.selectAll("#map .unselected_region")
   let selected_quintiles = []
 
   d3.selectAll("#quintile_pyramid .unselected_quintile")
-    .on("click", function(event, d) {
+    .on("mouseover", function(event, d) {
         if (d3.select(this).attr("class") === "unselected_quintile") {
             d3.select(this).attr("class", "selected_quintile");
             const quintile_selected = d3.select(this).attr("data-value");
@@ -1082,14 +1092,14 @@ d3.selectAll("#map .unselected_region")
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
             update_all()
             }
-
+            console.log("selected quintiles: ", selected_quintiles)
         })
     
     // Doing the part of selecting gender
     let selected_genders = []
 
     d3.selectAll(".female_button_unselected")
-        .on("click", function(event, d) {
+        .on("mouseover", function(event, d) {
             if (d3.select(this).attr("class") === "female_button_unselected") {
                 d3.select(this).attr("class", "female_button_selected");
                 const selected_gender = d3.select(this).attr("data-value");
@@ -1107,7 +1117,7 @@ d3.selectAll("#map .unselected_region")
             })
     
     d3.selectAll(".male_button_unselected")
-        .on("click", function(event, d) {
+        .on("mouseover", function(event, d) {
             if (d3.select(this).attr("class") === "male_button_unselected") {
                 d3.select(this).attr("class", "male_button_selected");
                 const selected_gender = d3.select(this).attr("data-value");
@@ -1127,20 +1137,20 @@ d3.selectAll("#map .unselected_region")
     let selected_years = []
 
     d3.selectAll(".button_year.unselected_year")
-        .on("click", function(event, d) {
+        .on("mouseover", function(event, d) {
             if (d3.select(this).attr("class") === "button_year unselected_year") {
                 d3.select(this).attr("class", "button_year selected_year");
                 const year = parseInt(d3.select(this).text())
                 selected_years.push(year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
-                update_all()
             } else {
                 d3.select(this).attr("class", "button_year unselected_year");
                 const year = parseInt(d3.select(this).text())
                 removeRegion(selected_years, year);
                 d3.select("#selected_years").text("Selected years: " + selected_years.join(", "));
-                update_all()
                 }
+            selected_years.sort((a, b) => a - b);
+            update_all()
 
             })
         
