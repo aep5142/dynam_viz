@@ -230,20 +230,16 @@
 
                 </div>
 
-                <div id="avg_student" class="div_three_rows non_display">
+                <div id="avg_student" class="div_two_columns non_display">
                         <!-- This is the Average loan section-->
                         <div id="avg_loan">
-                            <h2>Loan per student</h2> <span>In 2024 US Dollars (Avg.)</span>
-                        </div>
-
-                        <!-- This is the Average Financed years section-->
-                        <div id="avg_financed_years">
-                            <h2>Total Years Financed (Avg.)</h2>
+                            <h2 margin="0">Loan per student</h2> <span margin="0">In 2024 US Dollars (Avg.)</span>
                         </div>
 
                         <!-- This is the Average Percentage Financed section-->
                         <div id="percentage_financed">
                             <h2>Yearly tuition financed (Avg %)</h2>
+                            <svg viewBox = "0 0 1000 100" width="80%" margin="0"></svg>
                         </div>
                 </div>
 
@@ -631,10 +627,10 @@ function calculateRatesOutcomes(data,
                         let final_values = {
                             graduates_direct: graduates_direct_ratio,
                             graduates_frozen:graduates_frozen_ratio,
-                            desertor_direct:desertor_direct_ratio,
-                            desertor_frozen:desertor_frozen_ratio,
                             graduates_change_program: graduates_change_program_ratio,
-                            desertor_change_program: desertor_change_program_ratio
+                            desertor_change_program: desertor_change_program_ratio,
+                            desertor_frozen:desertor_frozen_ratio,
+                            desertor_direct:desertor_direct_ratio
                         }
                         return final_values
                     }
@@ -918,10 +914,21 @@ function updateAvgLoan(filters) {
               avg_loans,
               filters 
           );
+    
+    let total_dollars_int = Math.round(val);
+    let formatted_dollars = total_dollars_int.toLocaleString();
+    let text_part = "US$" + formatted_dollars
+    
     d3.select("#avg_loan p")
-      .text(
-          val
-      );
+      .text(text_part)
+      .style("font-size", "50px")
+      .style("font-weight", "bold")
+      .attr("padding", 0)
+      .attr("margin", "0")
+
+
+      
+      ;
     }
 
 // function to update avg_financed_years
@@ -939,9 +946,76 @@ function updateAvgPercentFinanced(filters) {
     let val = avgPercentFinanced(
               percentage_financed,
               filters);
+
+    let percent_line = val * 1000;
+    console.log("percent line is " + percent_line);
+    let min_x = 0;
+    let max_x = 1000;
+    let middle_y = 50
+    let min_y = middle_y + 10;
+    let max_y = middle_y - 10;
+    let stroke_widht_hori= "2%";
+    let text_part = "On Average, banks financed " + (Math.round(percent_line)/10) + "% of the requested tuition"
+
+    
+    // Select the existing SVG container and remove the old lines
+    let svg = d3.select("#percentage_financed").select("svg");
+    svg.selectAll("line").remove();
+    svg.selectAll("text").remove();
+
+    
+    // Vertical line of the beginning
+    svg.append("line")
+        .attr("width", percent_line)
+        .attr("stroke", "black")
+        .attr("x1", min_x)
+        .attr("x2", min_x)
+        .attr("y1", min_y)
+        .attr("y2", max_y);
+    
+    // Horizontal line of the financed part    
+    svg.append("line")
+        .attr("width", percent_line)
+        .attr("stroke", "red")
+        .attr("stroke-width", stroke_widht_hori)
+        .attr("x1", min_x)
+        .attr("x2", min_x + percent_line)
+        .attr("y1", middle_y)
+        .attr("y2", middle_y);
+
+
+    // Horizontal line of the non-financed part
+    svg.append("line")
+        .attr("width", max_x - percent_line)
+        .attr("stroke", "blue")
+        .attr("stroke-width", stroke_widht_hori)
+        .attr("x1", min_x + percent_line)
+        .attr("x2", max_x)
+        .attr("y1", 50)
+        .attr("y2", 50)
+
+    // Vertical line of the middle
+        svg.append("line")
+        .attr("width", percent_line)
+        .attr("stroke", "lightblue")
+        .attr("stroke-width", stroke_widht_hori)
+        .attr("x1", min_x + percent_line)
+        .attr("x2", min_x + percent_line)
+        .attr("y1", min_y)
+        .attr("y2", max_y);
+
+    // Vertical line of the end
+    svg.append("line")
+        .attr("width", percent_line)
+        .attr("stroke", "black")
+        .attr("x1", max_x)
+        .attr("x2", max_x)
+        .attr("y1", min_y)
+        .attr("y2", max_y);
+
     d3.select("#percentage_financed p")
       .text(
-          val 
+          text_part
           )
       }
 
@@ -956,16 +1030,15 @@ function updateRatesOutcome(filters) {
     const squareSize = 50;
     const columns = 10;
     let colors = {
-            graduates_direct: "#77ACA2",
-            graduates_frozen: "#9DBEBB",
-            desertor_direct: "#FF82A9",
-            desertor_frozen: "#FFC0BE",
-            graduates_change_program: "#BBB5BD",
-            desertor_change_program: "#AA6DA3"
-                };
+                    graduates_direct: "#384D48",
+                    graduates_frozen: "#6E7271",
+                    graduates_change_program: "#BBB5BD",
+                    desertor_change_program: "#FFAF87",
+                    desertor_frozen: "#FF8E72",
+                    desertor_direct: "#FF5141",
+                }
 
     let waffleData = [];
-    console.log(waffleData);
     Object.entries(data).forEach(([k, v]) => {
         const count = Math.round(v * totalSquares);
         for (let i = 0; i < count; i++) waffleData.push({ category: k });
@@ -981,23 +1054,57 @@ function updateRatesOutcome(filters) {
 
     // ---------- DRAW ----------
     d3.select("#waffle_chart").selectAll("svg").remove();
+    
     const svg = d3.select("#waffle_chart")
         .append("svg")
         .attr("width", columns * squareSize)
         .attr("height", columns * squareSize);
 
+    let tooltip_waffle = d3.select("body")
+    .append("div")
+    .attr("id", "waffle-tooltip")
+    .style("position", "absolute")
+    .style("padding", "6px 10px")
+    .style("background", "rgba(0,0,0,0.75)")
+    .style("color", "white")
+    .style("border-radius", "4px")
+    .style("pointer-events", "none")
+    .style("font-size", "12px")
+    .style("opacity", 0);
+    
     svg.selectAll("rect")
-        .data(waffleData)
-        .enter()
-        .append("rect")
-        .attr("width", squareSize - 2)
-        .attr("height", squareSize - 2)
-        .attr("x", (d, i) => (i % columns) * squareSize)
-        .attr("y", (d, i) => Math.floor(i / columns) * squareSize)
-        .attr("fill", d => colors[d.category])
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 1);
-        }
+    .data(waffleData)
+    .enter()
+    .append("rect")
+    .attr("width", squareSize - 2)
+    .attr("height", squareSize - 2)
+    .attr("x", (d, i) => (i % columns) * squareSize)
+    .attr("y", (d, i) => Math.floor(i / columns) * squareSize)
+    .attr("fill", d => colors[d.category])
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1)
+    .on("mouseover", function(event, d) {
+
+        if (!d.category) return;
+
+        // Calculate percentage
+        const pct = (data[d.category] * 100).toFixed(1);
+
+        tooltip
+            .style("opacity", 1)
+            .html(`
+                <b>${d.category.replace(/_/g, " ")}</b><br>
+                ${pct}% of students
+            `);
+    })
+    .on("mousemove", function(event) {
+        tooltip
+            .style("left", (event.pageX + 12) + "px")
+            .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", function() {
+        tooltip.style("opacity", 0);
+    });}
 
 function update_all() {
     let filters = filterArrays(selected_regions,

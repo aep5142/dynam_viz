@@ -58,7 +58,6 @@ a {
    display: grid;
 }
 
-
 .div_three_columns {
    display: grid;
    grid-template-columns: repeat(3, 1fr);
@@ -67,7 +66,7 @@ a {
 .div_two_columns {
    display: grid;
    grid-template-columns: repeat(2, 1fr);
-   border-bottom: 1px solid yellow;
+   box-sizing: border-box;
 }
 
 #region_selection {
