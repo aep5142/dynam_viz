@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAE's Policy</title>
     <link rel="stylesheet" href="css/main.css"> <!-- Here I'm importing the CSS styles-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <script src="js/main.js"></script> <!-- Here I'm importing the JS functions-->
@@ -84,7 +85,7 @@
         </div>
     </div>
     
-    <div id="main_grid_container" class="non_display">
+    <div id="main_grid_container" class="display_element">
         <!-- This is the left section-->
         <div id="region_selection">
             <div class="filter_title">Select Region(s)</div>
@@ -247,7 +248,7 @@
                 <div id="grad_rates_div" class="non_display">
                         <!-- This is the Average graduation rates-->
                         <div id="grad_rates">
-                            <h2>Viz graduation_rates</h2>
+                            <h2>Out of people who started, where they ended:</h2>
                             <div id="waffle_chart"></div>
                         </div>
                 </div>
@@ -368,7 +369,6 @@
 
     </div>
     <div width = "300px" height="400px">
-        
      </div>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -1065,7 +1065,6 @@ function updateRatesOutcome(filters) {
     let data = calculateRatesOutcomes(
               student_paths,
               filters);
-    console.log(data)
     // ---------- PREPARE WAFFLE DATA ----------
     const totalSquares = 100;
     const squareSize = 50;
@@ -1078,6 +1077,22 @@ function updateRatesOutcome(filters) {
                 }
 
     let waffleData = [];
+    
+        // Order in legend + waffle stacking
+    const order = [
+        "Graduated",
+        "Graduated changing program",
+        "Desertion changing program",
+        "Desertion"
+    ];
+
+    // For readable names in legend (optional)
+    const labels = {
+        "Graduated": "Graduated",
+        "Graduated changing program": "Changed Program, then Graduated",
+        "Desertion changing program": "Changed Program, then Abandoned",
+        "Desertion": "Abandoned the program"
+};
     Object.entries(data).forEach(([k, v]) => {
         const count = Math.round(v * totalSquares);
         for (let i = 0; i < count; i++) waffleData.push({ category: k });
@@ -1095,9 +1110,18 @@ function updateRatesOutcome(filters) {
     d3.select("#waffle_chart").selectAll("svg").remove();
     
     const svg = d3.select("#waffle_chart")
-        .append("svg")
-        .attr("width", columns * squareSize)
-        .attr("height", columns * squareSize);
+    .append("svg")
+    .attr("width", columns * squareSize + 400)
+    .attr("height", columns * squareSize);
+
+    // ADD PERSON ICON SHAPE
+    svg.append("defs").html(`
+    <symbol id="person-icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="6" r="4"></circle>
+        <path d="M4 22c0-5 4-8 8-8s8 3 8 8" />
+    </symbol>
+    `);
+
 
     let tooltip_waffle = d3.select("body")
     .append("div")
@@ -1109,20 +1133,22 @@ function updateRatesOutcome(filters) {
     .style("border-radius", "4px")
     .style("pointer-events", "none")
     .style("font-size", "12px")
-    .style("opacity", 0);
+    .style("opacity", 0);    
     
-    svg.selectAll("rect")
+    const svg_waffle = d3.select("#waffle_chart svg"); // assume svg already created
+    const cols = 10;
+
+    svg_waffle.selectAll("use.person")
     .data(waffleData)
-    .enter()
-    .append("rect")
-    .attr("rx", "20px")
-    .attr("width", squareSize - 2)
-    .attr("height", squareSize - 2)
-    .attr("x", (d, i) => (i % columns) * squareSize)
-    .attr("y", (d, i) => Math.floor(i / columns) * squareSize)
-    .attr("fill", d => colors[d.category])
-    .attr("stroke", "#fff")
-    .attr("stroke-width", 1)
+    .join("use")
+    .attr("class", "person")
+    .attr("href", "#person-icon")
+    .attr("width", 28)
+    .attr("height", 36)
+    .attr("x", (d,i) => (i % cols) * squareSize + (squareSize - 28)/2)
+    .attr("y", (d,i) => Math.floor(i/cols) * squareSize + (squareSize - 36)/2)
+    .style("fill", d => d.category ? colors[d.category] : "#eee")
+    .style("opacity", d => d.category ? 1 : 0.45)
     .on("mouseover", function(event, d) {
 
         if (!d.category) return;
@@ -1144,7 +1170,33 @@ function updateRatesOutcome(filters) {
     })
     .on("mouseout", function() {
         tooltip.style("opacity", 0);
-    });}
+    });
+
+    // ============== LEGEND ==============
+    const legend = svg_waffle.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${columns * squareSize + 20}, 20)`);
+
+    order.forEach((key, i) => {
+        const pct = (data[key] * 100).toFixed(1);
+
+        // color box
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", i * 35)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("rx", 4)
+            .attr("fill", colors[key]);
+
+        // category name + percentage
+        legend.append("text")
+            .attr("x", 30)
+            .attr("y", i * 35 + 15)
+            .attr("font-size", "14px")
+            .text(`${labels[key]} — ${pct}%`);
+    });
+    }
 
 function update_all() {
     let filters = filterArrays(selected_regions,
@@ -1442,10 +1494,6 @@ d3.json("www/data/path_student.json").then(function(data) {
     console.log("STUDENT PATHS LOADED:", data);
     student_paths = data;
     
-
-    d3.select("#grad_rates")
-      .append("p")
-      .text("0")
     updateRatesOutcome(filters)
       });
 
@@ -1455,11 +1503,6 @@ let total_students_data = []
 d3.json("www/data/students_studying.json").then(function(data) {
     console.log("students studying LOADED:", data);
     total_students_data = data;
-    
-
-    d3.select("#grad_rates")
-      .append("p")
-      .text("0")
     updateTotalStudents(filters)
       });
 

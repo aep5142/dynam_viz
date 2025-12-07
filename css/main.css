@@ -289,3 +289,9 @@ a {
    stroke:#000;
    stroke-width: 1.5px
 }
+
+
+.person {
+      font-size: 32px; /* Tamaño de los íconos */
+      color: #555555;
+    }
