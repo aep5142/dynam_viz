@@ -248,7 +248,10 @@
                 <div id="grad_rates_div" class="non_display">
                         <!-- This is the Average graduation rates-->
                         <div id="grad_rates">
+                            <br>
                             <h2>Out of people who started, where they ended:</h2>
+                            <br>
+                            <br>
                             <div id="waffle_chart"></div>
                         </div>
                 </div>
@@ -1112,16 +1115,15 @@ function updateRatesOutcome(filters) {
     const svg = d3.select("#waffle_chart")
     .append("svg")
     .attr("width", columns * squareSize + 400)
-    .attr("height", columns * squareSize);
+    .attr("height", columns * squareSize)
 
     // ADD PERSON ICON SHAPE
     svg.append("defs").html(`
     <symbol id="person-icon" viewBox="0 0 24 24">
-        <circle cx="12" cy="6" r="4"></circle>
-        <path d="M4 22c0-5 4-8 8-8s8 3 8 8" />
+        <circle cx="12" cy="6" r="5"></circle>
+        <path d="M2 22c0-8 6-10 10-10s10 4 10 10" />
     </symbol>
     `);
-
 
     let tooltip_waffle = d3.select("body")
     .append("div")
@@ -1182,19 +1184,29 @@ function updateRatesOutcome(filters) {
 
         // color box
         legend.append("rect")
-            .attr("x", 0)
+            .attr("x", 25)
             .attr("y", i * 35)
-            .attr("width", 20)
+            .attr("width", 50)
             .attr("height", 20)
             .attr("rx", 4)
             .attr("fill", colors[key]);
+            
+
+        legend.append("text")
+            .attr("x", 50)
+            .attr("y", i * 35 + 14.5)
+            .attr("fill", "white")
+            .text(pct+"%")
+            .attr("text-anchor", "middle")
+            .style("font-size", 13)
+            .style("opacity", 0.75)
 
         // category name + percentage
         legend.append("text")
-            .attr("x", 30)
-            .attr("y", i * 35 + 15)
-            .attr("font-size", "14px")
-            .text(`${labels[key]} — ${pct}%`);
+            .attr("x", 85)
+            .attr("y", i * 35 + 14.5)
+            .attr("font-size", "16")
+            .text(`${labels[key]}`);
     });
     }
 
