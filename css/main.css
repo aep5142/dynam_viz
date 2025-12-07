@@ -124,7 +124,6 @@ a {
 .nav_option {
    text-align: center;
    font-size: 1rem ;
-   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
    font-weight: bold;
    color: #01968e;
 }
@@ -206,6 +205,7 @@ a {
    text-align: center;
    font-size: 0.8rem ;
    font-weight: bold;
+   color: black
 }
 
 .filter_instruction {
@@ -281,7 +281,6 @@ a {
 
 #quintile_pyramid .text_quintile {
   fill: black;
-  font-family: sans-serif;
   font-size: 1rem;
   font-weight: bold;
   font-size: 1.5rem;
