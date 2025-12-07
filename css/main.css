@@ -162,6 +162,16 @@ a {
    border: solid 0.5px lightgray;
 }
 
+#avg_student {
+   display: grid;
+   grid-template-rows: 70% 30%;
+}
+
+#avg_loan {
+   display: grid;
+   grid-template-columns: 50% 50%;
+}
+
 #grad_rates_div {
    place-items: center;
    place-content: center;

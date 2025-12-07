@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAE's Policy</title>
     <link rel="stylesheet" href="css/main.css"> <!-- Here I'm importing the CSS styles-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <script src="js/main.js"></script> <!-- Here I'm importing the JS functions-->
@@ -231,18 +230,27 @@
 
                 </div>
 
-                <div id="avg_student" class="div_two_columns non_display">
-                        <!-- This is the Average loan section-->
-                        <div id="avg_loan">
-                            <h2 margin="0">Loan per student</h2> <span margin="0">In 2024 US Dollars (Avg.)</span>
-                        </div>
-
-                        <!-- This is the Average Percentage Financed section-->
+                <div id="avg_student" class="non_display">
+                    <!-- This is the Average Percentage Financed section-->
                         <div id="percentage_financed">
                             <h2>Yearly tuition financed (Avg %)</h2>
                             <p></p>
-                            <svg viewBox = "0 0 1000 100" width="80%" margin="0"></svg>
+                            <svg viewBox = "0 0 1000 200" width="80%" height= 200 margin="0"></svg>
+                        </div>    
+                    
+                    <!-- This is the Average loan section-->
+                        <div id="avg_loan">
+                            <div id="family-friends">
+                                <h2 margin="0">Contribution by Family & Friends</h2>
+                                <p></p>
+                            </div>
+                            <div id="banks">
+                                <h2 margin="0">Contribution by CAE (Banks)</h2>
+                                <p></p>
+                            </div>
                         </div>
+
+                        
                 </div>
 
                 <div id="grad_rates_div" class="non_display">
@@ -373,6 +381,7 @@
     </div>
     <div width = "300px" height="400px">
      </div>
+
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
@@ -713,9 +722,7 @@ function updateTotalStudents(filters) {
 
     // Scaling
     const maxValue = d3.max(students_data, d => d.total_enrolled);
-    console.log("max is " + maxValue);
     const min_value_y_axis = 0;//d3.min(students_data, d => d.total_enrolled);
-    console.log("min is " + min_value_y_axis);
     
     const yScale = d3.scaleLinear()
         .domain([min_value_y_axis, maxValue])
@@ -943,28 +950,6 @@ function updateTotalBorrowed(filters) {
 }
 
 
-
-// function to update avg_loan
-function updateAvgLoan(filters) {
-    let val = avgLoan(
-              avg_loans,
-              filters 
-          );
-    
-    let total_dollars_int = Math.round(val);
-    let formatted_dollars = total_dollars_int.toLocaleString();
-    let text_part = "US$" + formatted_dollars
-    
-    d3.select("#avg_loan p")
-      .text(text_part)
-      .style("font-size", "50px")
-      .style("font-weight", "bold")
-      .attr("padding", 0)
-      .attr("margin", "0")
-      .style("color", "#21D19F")
-      ;
-    }
-
 // function to update avg_financed_years
 function updateAvgFinancedYears(filters) {
     let val = avgFinancedYears(
@@ -977,90 +962,96 @@ function updateAvgFinancedYears(filters) {
 
 // function to update avg_financed_years
 function updateAvgPercentFinanced(filters) {
-    let val = avgPercentFinanced(
+    let loaned_money = avgLoan(
+                    avg_loans,
+                    filters);
+    
+    let bank_financed = avgPercentFinanced(
               percentage_financed,
               filters);
 
-    let percent_line = val * 1000;
-    let min_x = 0;
-    let max_x = 1000;
-    let middle_y = 50
-    let min_y = middle_y + 10;
-    let max_y = middle_y - 10;
+    let yrs_loan = avgFinancedYears(
+                    financed_years,
+                    filters);
+
+    let family_financed = 1-bank_financed;
+    let family_money = loaned_money/bank_financed*family_financed;                    
+    radio_scale = d3.scaleLinear([0,25], [0, 100]) // This is the scale for the radius
+
+    let bankRadius = radio_scale(bank_financed/family_financed);
+    let familyRadius = radio_scale(family_financed/family_financed);
+    let cx = 500;       // x-position for both
+    let cyBank = 100;    // y-position of big circle center
+
+    let svg = d3.select("#percentage_financed").select("svg");
+    console.log("hegiht: " + svg.attr("height"))
+    svg.selectAll("circle").remove();
+
+    let data_function_2 = [
+        {loaner: "Bank",
+        color: "#21D19F",
+        r: bankRadius,
+        cx: cx,
+        cy: cyBank,
+        money: loaned_money,
+        percent: bank_financed},
+
+        {loaner: "Family & Friends",
+        color: "#7D53DE",
+        r: familyRadius,
+        cx: cx,
+        cy: cyBank + bankRadius - familyRadius,
+        money: (loaned_money / bank_financed * (1-bank_financed)),
+        percent: (1-bank_financed)}
+    ];
+
+    svg.selectAll("circle")
+        .data(data_function_2)
+        .join("circle")
+        .attr("cx", d => d.cx)
+        .attr("cy", d => d.cy)
+        .attr("r", d => d.r)
+        .attr("fill", d => d.color);
+
+    let percent_line = bank_financed * 1000;
     let stroke_widht_hori= "2%";
     let formatted_percent = (Math.round(percent_line)/10) + "%"
-    let text_part = "On Average, banks financed " + formatted_percent + " of the requested tuition"
-
+    let ratio_bank = bankRadius / familyRadius;
+    let ratio_loan = Math.round(ratio_bank*10) / 10;
+    let ratio_loan_formatted = ratio_loan.toLocaleString();
     
-    // Select the existing SVG container and remove the old lines
-    let svg = d3.select("#percentage_financed").select("svg");
-    svg.selectAll("line").remove();
-    svg.selectAll("text").remove();
+    let text_takeaway = "On Average, banks financed " + ratio_loan_formatted + " times the contribution of the family<br>(" + formatted_percent + " of requested tuition)";
 
-    
-    // Vertical line of the beginning
-    svg.append("line")
-        .attr("width", percent_line)
-        .attr("stroke", "black")
-        .attr("x1", min_x)
-        .attr("x2", min_x)
-        .attr("y1", min_y)
-        .attr("y2", max_y);
-    
-    // Horizontal line of the financed part    
-    svg.append("line")
-        .attr("width", percent_line)
-        .attr("stroke", "#21D19F")
-        .attr("stroke-width", stroke_widht_hori)
-        .attr("x1", min_x)
-        .attr("x2", min_x + percent_line)
-        .attr("y1", middle_y)
-        .attr("y2", middle_y);
-
-
-    // Horizontal line of the non-financed part
-    svg.append("line")
-        .attr("width", max_x - percent_line)
-        .attr("stroke", "#7293A0")
-        .attr("stroke-width", stroke_widht_hori)
-        .attr("x1", min_x + percent_line)
-        .attr("x2", max_x)
-        .attr("y1", 50)
-        .attr("y2", 50)
-
-    // Vertical line of the middle
-        svg.append("line")
-        .attr("width", percent_line)
-        .attr("stroke", "lightblue")
-        .attr("stroke-width", stroke_widht_hori)
-        .attr("x1", min_x + percent_line)
-        .attr("x2", min_x + percent_line)
-        .attr("y1", min_y)
-        .attr("y2", max_y);
-
-        // Vertical line of the middle
-        svg.append("text")
-        .attr("x", min_x + percent_line - 18)
-        .attr("y", middle_y + 26)
-        .text(formatted_percent)
-        .style("fill", "black")
-        .style("font-weight", "bold");
-
-
-    // Vertical line of the end
-    svg.append("line")
-        .attr("width", percent_line)
-        .attr("stroke", "black")
-        .attr("x1", max_x)
-        .attr("x2", max_x)
-        .attr("y1", min_y)
-        .attr("y2", max_y);
 
     d3.select("#percentage_financed p")
-      .text(
-          text_part
-          )
-      }
+      .html(text_takeaway);
+
+    let total_dollars_bank_int = Math.round(loaned_money);
+    let formatted_dollars_bank = total_dollars_bank_int.toLocaleString();
+    let dollars_bank = "US$" + formatted_dollars_bank;
+    let total_dollars_family_int = Math.round(family_money);
+    let formatted_dollars_family = total_dollars_family_int.toLocaleString();
+    let dollars_family = "US$" + formatted_dollars_family;
+    
+    d3.select("#avg_loan #banks p")
+      .text(dollars_bank)
+      .style("font-size", "50px")
+      .style("font-weight", "bold")
+      .attr("padding", 0)
+      .attr("margin", "0")
+      .style("color", "#21D19F")
+      ;
+
+    d3.select("#avg_loan #family-friends p")
+      .text(dollars_family)
+      .style("font-size", "50px")
+      .style("font-weight", "bold")
+      .attr("padding", 0)
+      .attr("margin", "0")
+      .style("color", "#7D53DE")
+      ;
+    }
+    
 
 // function to update avg_financed_years
 function updateRatesOutcome(filters) {
@@ -1198,7 +1189,7 @@ function updateRatesOutcome(filters) {
             .attr("fill", "white")
             .text(pct+"%")
             .attr("text-anchor", "middle")
-            .style("font-size", 13)
+            .style("font-size", 14)
             .style("opacity", 0.75)
 
         // category name + percentage
@@ -1220,7 +1211,6 @@ function update_all() {
               all_years,
               all_regions);
     updateTotalBorrowed(filters);
-    updateAvgLoan(filters);
     updateAvgFinancedYears(filters);
     updateAvgPercentFinanced(filters);
     updateRatesOutcome(filters);
@@ -1466,14 +1456,7 @@ let avg_loans = []
 
 d3.json("www/data/avg_loan.json").then(function(data) {
     console.log("AVG LOANS LOADED:", data);
-    avg_loans = data;
-    
-
-    d3.select("#avg_loan")
-      .append("p")
-      .text("0")
-    updateAvgLoan(filters)
-      });
+    avg_loans = data});
 
 // Loading years financed
 let financed_years = []
