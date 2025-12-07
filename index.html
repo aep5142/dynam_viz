@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAE's Policy</title>
     <link rel="stylesheet" href="css/main.css"> <!-- Here I'm importing the CSS styles-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <script src="js/main.js"></script> <!-- Here I'm importing the JS functions-->
@@ -87,7 +88,10 @@
     <div id="main_grid_container" class="display_element">
         <!-- This is the left section-->
         <div id="region_selection">
-            <div class="filter_title">Select Region(s)</div>
+            <div>
+                <p class="filter_title">Select Region(s)</p>
+                <p class="filter_instruction"><i>Click on them!</i></p> 
+            </div>
             <div id="map_section">
             <svg
                     width="130"
@@ -230,23 +234,26 @@
 
                 </div>
 
-                <div id="avg_student" class="non_display">
+                <div id="avg_student" class="non_display" height="100%">
                     <!-- This is the Average Percentage Financed section-->
-                        <div id="percentage_financed">
-                            <h2>Yearly tuition financed (Avg %)</h2>
+                        <div id="text_percentage_financed">
                             <p></p>
-                            <svg viewBox = "0 0 1000 200" width="80%" height= 200 margin="0"></svg>
+                        </div>     
+                    
+                    <!-- Here's where the chart goes-->
+                        <div id="percentage_financed">
+                            <svg viewBox = "0 0 1000 400" width="80%" height="400" margin="0"></svg>
                         </div>    
                     
-                    <!-- This is the Average loan section-->
+                        <!-- This is the Average loan section-->  
                         <div id="avg_loan">
                             <div id="family-friends">
-                                <h2 margin="0">Contribution by Family & Friends</h2>
+                                <h2 margin="0">Contribution from Family & Friends</h2>
                                 <p></p>
                             </div>
                             <div id="banks">
                                 <h2 margin="0">Contribution by CAE (Banks)</h2>
-                                <p></p>
+                                <p class="text_avg_loan"></p>
                             </div>
                         </div>
 
@@ -267,7 +274,7 @@
         </div>
         
         <!-- This is the year selection range -->
-        <div id="filters" class="div_three_rows">
+        <div id="filters">
             <div id="year_selection" class="filter_square">
                 <div class="filter_title">Select Year(s)</div>
 
@@ -442,26 +449,52 @@ function iscontained(value, array) {
     }
 }
 
-// Function to check arrays of regions, years, quintile and gender
-function filterArrays(selected_regions,
-                    selected_years,
-                    selected_genders,
-                    selected_quintiles,
-                    all_genders,
-                    all_quintiles,
-                    all_years,
-                    all_regions)
-                    {
-                        let final_sum = 0;
-                        let regions_filter = defineArray(selected_regions, all_regions);
-                        let years_filter = defineArray(selected_years, all_years);
-                        let quintile_filter = defineArray(selected_quintiles, all_quintiles);
-                        let gender_filter = defineArray(selected_genders, all_genders);
-                        return [regions_filter,
-                            years_filter,
-                            quintile_filter,
-                            gender_filter
-                        ]}
+function filterArrays(
+    selected_regions,
+    selected_years,
+    selected_genders,
+    selected_quintiles,
+    all_genders,
+    all_quintiles,
+    all_years,
+    all_regions
+) {
+    const selections = {
+        regions: selected_regions,
+        years: selected_years,
+        genders: selected_genders,
+        quintiles: selected_quintiles
+    };
+
+    const allOptions = {
+        regions: all_regions,
+        years: all_years,
+        genders: all_genders,
+        quintiles: all_quintiles
+    };
+
+    const activeCount = Object.values(selections).filter(a => a.length > 0).length;
+
+    // CASE 1: all empty
+    if (activeCount === 0) {
+        return {
+            regions: [],
+            years: [],
+            genders: [],
+            quintiles: []
+        };
+    }
+
+    // CASE 2: fill empty ones with "all options"
+    return {
+        regions: selections.regions.length   ? selections.regions   : all_regions,
+        years: selections.years.length       ? selections.years     : all_years,
+        genders: selections.genders.length   ? selections.genders   : all_genders,
+        quintiles: selections.quintiles.length ? selections.quintiles : all_quintiles
+    };
+}
+
+
 
 
 // Function to sum all CAEs granted
@@ -469,10 +502,10 @@ function totalCaesGranted(data,
                     selectedFiltersArray,
                     ) { 
                         let caes_granted = {}
-                        let rs = selectedFiltersArray[0];
-                        let yrs = selectedFiltersArray[1];
-                        let qnt = selectedFiltersArray[2];
-                        let gnd = selectedFiltersArray[3];
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
                         yrs.forEach(e => {
                             caes_granted[e] = 0
@@ -495,10 +528,10 @@ function sumBorrowed(data,
                     selectedFiltersArray,
                     ) { 
                         let final_sum = 0;
-                        let rs = selectedFiltersArray[0];
-                        let yrs = selectedFiltersArray[1];
-                        let qnt = selectedFiltersArray[2];
-                        let gnd = selectedFiltersArray[3];
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
                         data.forEach(e => {
                             if ((iscontained(e.region, rs)) &&
@@ -517,10 +550,10 @@ function avgLoan(data,
                     ) { 
                         let money_borrowed_weighted = 0;
                         let n_students = 0;
-                        let rs = selectedFiltersArray[0];
-                        let yrs = selectedFiltersArray[1];
-                        let qnt = selectedFiltersArray[2];
-                        let gnd = selectedFiltersArray[3];
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
                         data.forEach(e => {
                             if ((iscontained(e.region, rs)) &&
@@ -540,10 +573,10 @@ function avgFinancedYears(data,
                     ) { 
                         let yrs_fin = 0;
                         let n_students = 0;
-                        let rs = selectedFiltersArray[0];
-                        let yrs = selectedFiltersArray[1];
-                        let qnt = selectedFiltersArray[2];
-                        let gnd = selectedFiltersArray[3];
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
                         data.forEach(e => {
                             if ((iscontained(e.region, rs)) &&
@@ -563,10 +596,10 @@ function avgPercentFinanced(data,
                     ) { 
                         let prct_fin = 0;
                         let n_students = 0;
-                        let rs = selectedFiltersArray[0];
-                        let yrs = selectedFiltersArray[1];
-                        let qnt = selectedFiltersArray[2];
-                        let gnd = selectedFiltersArray[3];
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
                         data.forEach(e => {
                             if ((iscontained(e.region, rs)) &&
@@ -604,10 +637,10 @@ function calculateRatesOutcomes(data,
                         desertor_change_program = 0;
                         desertor_change_program_ratio = 0;
 
-                        let rs = selectedFiltersArray[0];
-                        let yrs = selectedFiltersArray[1];
-                        let qnt = selectedFiltersArray[2];
-                        let gnd = selectedFiltersArray[3];
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
                         data.forEach(e => {
                             if ((iscontained(e.region, rs)) &&
@@ -651,10 +684,10 @@ function calculateRatesOutcomes(data,
 function totalStudents(data, selectedFiltersArray) { 
     
             let students_data = [];
-            let rs = selectedFiltersArray[0];   // regions
-            let yrs = selectedFiltersArray[1];  // years
-            let qnt = selectedFiltersArray[2];  // quintiles
-            let gnd = selectedFiltersArray[3];  // gender
+                        let rs  = selectedFiltersArray.regions;
+                        let yrs = selectedFiltersArray.years;
+                        let qnt = selectedFiltersArray.quintiles;
+                        let gnd = selectedFiltersArray.genders;
 
             // Initialize structure for each selected year
             yrs.forEach(y => {
@@ -976,15 +1009,14 @@ function updateAvgPercentFinanced(filters) {
 
     let family_financed = 1-bank_financed;
     let family_money = loaned_money/bank_financed*family_financed;                    
-    radio_scale = d3.scaleLinear([0,25], [0, 100]) // This is the scale for the radius
+    radio_scale = d3.scaleLinear([0,bank_financed], [0, 250]) // This is the scale for the radius
 
-    let bankRadius = radio_scale(bank_financed/family_financed);
-    let familyRadius = radio_scale(family_financed/family_financed);
+    let bankRadius = radio_scale(bank_financed);
+    let familyRadius = radio_scale(family_financed);
     let cx = 500;       // x-position for both
-    let cyBank = 100;    // y-position of big circle center
+    let cyBank = 200;    // y-position of big circle center
 
     let svg = d3.select("#percentage_financed").select("svg");
-    console.log("hegiht: " + svg.attr("height"))
     svg.selectAll("circle").remove();
 
     let data_function_2 = [
@@ -1011,7 +1043,9 @@ function updateAvgPercentFinanced(filters) {
         .attr("cx", d => d.cx)
         .attr("cy", d => d.cy)
         .attr("r", d => d.r)
-        .attr("fill", d => d.color);
+        .attr("fill", d => d.color)
+        .style("border-color", "black")
+        .style("border", "3px");
 
     let percent_line = bank_financed * 1000;
     let stroke_widht_hori= "2%";
@@ -1023,7 +1057,7 @@ function updateAvgPercentFinanced(filters) {
     let text_takeaway = "On Average, banks financed " + ratio_loan_formatted + " times the contribution of the family<br>(" + formatted_percent + " of requested tuition)";
 
 
-    d3.select("#percentage_financed p")
+    d3.select("#text_percentage_financed p")
       .html(text_takeaway);
 
     let total_dollars_bank_int = Math.round(loaned_money);
@@ -1035,19 +1069,13 @@ function updateAvgPercentFinanced(filters) {
     
     d3.select("#avg_loan #banks p")
       .text(dollars_bank)
-      .style("font-size", "50px")
-      .style("font-weight", "bold")
-      .attr("padding", 0)
-      .attr("margin", "0")
+      .classed("text_avg_loan", true)
       .style("color", "#21D19F")
       ;
 
     d3.select("#avg_loan #family-friends p")
       .text(dollars_family)
-      .style("font-size", "50px")
-      .style("font-weight", "bold")
-      .attr("padding", 0)
-      .attr("margin", "0")
+      .classed("text_avg_loan", true) 
       .style("color", "#7D53DE")
       ;
     }

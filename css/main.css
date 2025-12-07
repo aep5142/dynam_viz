@@ -48,6 +48,7 @@ a {
    height: 45rem;
    width: 95%;
    grid-template-columns: 10% 80% 10%;
+   font-family: 'Poppins', sans-serif;
 }
 
 .div_three_rows {
@@ -163,13 +164,30 @@ a {
 }
 
 #avg_student {
-   display: grid;
-   grid-template-rows: 70% 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* vertical centering */
+    align-items: center;       /* horizontal centering */
+    height: 100%;              /* needed for vertical centering */
+    gap: 0rem;                 /* optional spacing between blocks */
 }
 
 #avg_loan {
-   display: grid;
-   grid-template-columns: 50% 50%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;   /* vertical centering */
+   align-items: center;
+   text-align: center;       /* horizontal centering */
+   height: 100%;
+   width: 100%;              /* needed for vertical centering */
+   gap: 4rem;             
+}
+
+.text_avg_loan { 
+   font-size: 50px;
+   font-weight: bold;
+   padding: 0;
+   margin: 0;
 }
 
 #grad_rates_div {
@@ -180,7 +198,7 @@ a {
 
 #filters {
    display: grid;
-   grid-template-rows: 42.5% 42.5% 15%;
+   grid-template-rows: 50% 35% 15%;
    border-left: 1px solid black;
 }
 
@@ -188,6 +206,13 @@ a {
    text-align: center;
    font-size: 0.8rem ;
    font-weight: bold;
+}
+
+.filter_instruction {
+   text-align: center;
+   font-size: 0.6rem ;
+   margin: 0.1rem;
+   color: rgb(72, 72, 72)
 }
 
 .filter_square{
