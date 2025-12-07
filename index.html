@@ -239,6 +239,7 @@
                         <!-- This is the Average Percentage Financed section-->
                         <div id="percentage_financed">
                             <h2>Yearly tuition financed (Avg %)</h2>
+                            <p></p>
                             <svg viewBox = "0 0 1000 100" width="80%" margin="0"></svg>
                         </div>
                 </div>
@@ -625,12 +626,10 @@ function calculateRatesOutcomes(data,
                             } 
                         })
                         let final_values = {
-                            graduates_direct: graduates_direct_ratio,
-                            graduates_frozen:graduates_frozen_ratio,
-                            graduates_change_program: graduates_change_program_ratio,
-                            desertor_change_program: desertor_change_program_ratio,
-                            desertor_frozen:desertor_frozen_ratio,
-                            desertor_direct:desertor_direct_ratio
+                            "Graduated": graduates_direct_ratio + graduates_frozen_ratio,
+                            "Graduated changing program": graduates_change_program_ratio,
+                            "Desertion changing program": desertor_change_program_ratio,
+                            "Desertion":desertor_direct_ratio + desertor_frozen_ratio
                         }
                         return final_values
                     }
@@ -702,7 +701,6 @@ function updateTotalStudents(filters) {
     const height = +svg.attr("height");
     const marginTop = 20;
     const marginBottom = 40; // leave space for year labels
-    console.log("h: "+ height + " margintop: " + marginTop + " margin_bottom: " + marginBottom);
 
     const n = students_data.length;
     const maxBarWidth = 70;
@@ -712,7 +710,10 @@ function updateTotalStudents(filters) {
 
     // Scaling
     const maxValue = d3.max(students_data, d => d.total_enrolled);
-    const min_value_y_axis = d3.min(students_data, d => d.total_enrolled);
+    console.log("max is " + maxValue);
+    const min_value_y_axis = 0;//d3.min(students_data, d => d.total_enrolled);
+    console.log("min is " + min_value_y_axis);
+    
     const yScale = d3.scaleLinear()
         .domain([min_value_y_axis, maxValue])
         .range([0, height - marginTop - marginBottom]);
@@ -801,18 +802,50 @@ function updateTotalStudents(filters) {
         .attr("font-size", "10px")
         .attr("fill", "black")
         .attr("y", height - 5);
-}
-        
+
+    // ===== LEGEND =====
+    const legendData = [
+        { label: "CAE Students", key: "total_cae" },
+        { label: "Rest of Students", key: "total_non_cae" }
+    ];
+
+    const legend = svg.selectAll("g.legend")
+        .data(legendData)
+        .join(enter => enter.append("g")
+            .attr("class", "legend"))
+        .attr("transform", (d, i) => `translate(10, ${10 + i * 18})`); // spacing
+
+    // colored squares
+    legend.selectAll("rect")
+        .data(d => [d])
+        .join("rect")
+        .attr("x", 0)
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", d => color(d.key))
+        .attr("stroke", "#333")
+        .attr("stroke-width", 0.5);
+
+    // labels
+    legend.selectAll("text")
+        .data(d => [d])
+        .join("text")
+        .attr("x", 18)
+        .attr("y", 10)
+        .attr("font-size", "12px")
+        .attr("fill", "#000")
+        .text(d => d.label);
+
+    }
+            
 
 
 
 
 function updateTotalBorrowed(filters) {
     let total_dots = sumBorrowed(total_borrowed, filters);
-    console.log("total dots are " + total_dots)
     let total_dots_int = Math.round(total_dots);
     let formatted = total_dots_int.toLocaleString();
-    console.log("formatted is" + formatted);
 
     const svg = d3.select("#dots_total_borrowed");
     // get rendered width (in px)
@@ -925,9 +958,7 @@ function updateAvgLoan(filters) {
       .style("font-weight", "bold")
       .attr("padding", 0)
       .attr("margin", "0")
-
-
-      
+      .style("color", "#21D19F")
       ;
     }
 
@@ -948,14 +979,14 @@ function updateAvgPercentFinanced(filters) {
               filters);
 
     let percent_line = val * 1000;
-    console.log("percent line is " + percent_line);
     let min_x = 0;
     let max_x = 1000;
     let middle_y = 50
     let min_y = middle_y + 10;
     let max_y = middle_y - 10;
     let stroke_widht_hori= "2%";
-    let text_part = "On Average, banks financed " + (Math.round(percent_line)/10) + "% of the requested tuition"
+    let formatted_percent = (Math.round(percent_line)/10) + "%"
+    let text_part = "On Average, banks financed " + formatted_percent + " of the requested tuition"
 
     
     // Select the existing SVG container and remove the old lines
@@ -976,7 +1007,7 @@ function updateAvgPercentFinanced(filters) {
     // Horizontal line of the financed part    
     svg.append("line")
         .attr("width", percent_line)
-        .attr("stroke", "red")
+        .attr("stroke", "#21D19F")
         .attr("stroke-width", stroke_widht_hori)
         .attr("x1", min_x)
         .attr("x2", min_x + percent_line)
@@ -987,7 +1018,7 @@ function updateAvgPercentFinanced(filters) {
     // Horizontal line of the non-financed part
     svg.append("line")
         .attr("width", max_x - percent_line)
-        .attr("stroke", "blue")
+        .attr("stroke", "#7293A0")
         .attr("stroke-width", stroke_widht_hori)
         .attr("x1", min_x + percent_line)
         .attr("x2", max_x)
@@ -1003,6 +1034,15 @@ function updateAvgPercentFinanced(filters) {
         .attr("x2", min_x + percent_line)
         .attr("y1", min_y)
         .attr("y2", max_y);
+
+        // Vertical line of the middle
+        svg.append("text")
+        .attr("x", min_x + percent_line - 18)
+        .attr("y", middle_y + 26)
+        .text(formatted_percent)
+        .style("fill", "black")
+        .style("font-weight", "bold");
+
 
     // Vertical line of the end
     svg.append("line")
@@ -1021,21 +1061,20 @@ function updateAvgPercentFinanced(filters) {
 
 // function to update avg_financed_years
 function updateRatesOutcome(filters) {
+    
     let data = calculateRatesOutcomes(
               student_paths,
               filters);
-
+    console.log(data)
     // ---------- PREPARE WAFFLE DATA ----------
     const totalSquares = 100;
     const squareSize = 50;
     const columns = 10;
     let colors = {
-                    graduates_direct: "#384D48",
-                    graduates_frozen: "#6E7271",
-                    graduates_change_program: "#BBB5BD",
-                    desertor_change_program: "#FFAF87",
-                    desertor_frozen: "#FF8E72",
-                    desertor_direct: "#FF5141",
+                    "Graduated": "#33658A",
+                    "Graduated changing program": "#86BBD8",
+                    "Desertion changing program": "#FFA5AB",
+                    "Desertion": "#DA627D",
                 }
 
     let waffleData = [];
@@ -1076,6 +1115,7 @@ function updateRatesOutcome(filters) {
     .data(waffleData)
     .enter()
     .append("rect")
+    .attr("rx", "20px")
     .attr("width", squareSize - 2)
     .attr("height", squareSize - 2)
     .attr("x", (d, i) => (i % columns) * squareSize)
@@ -1203,7 +1243,6 @@ d3.selectAll("#map .unselected_region")
             d3.select("#selected_quintiles").text("Selected quintiles: " + selected_quintiles.join(", "));
             update_all()
             }
-            console.log("selected quintiles: ", selected_quintiles)
         })
     
     // Doing the part of selecting gender
@@ -1392,11 +1431,7 @@ let percentage_financed = []
 d3.json("www/data/percent_financed.json").then(function(data) {
     console.log("PERCENT FINANCED LOADED:", data);
     percentage_financed = data;
-    
 
-    d3.select("#percentage_financed")
-      .append("p")
-      .text("0")
     updateAvgPercentFinanced(filters)
       });
 
