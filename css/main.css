@@ -21,30 +21,80 @@ a {
 #main_nav {
    width: 50%;
    height: 1%;
-   margin-top: 0rem;
    text-align: center;
    align-items: center;
    background-color: white;
    font-size: 1rem;
    display: grid;
-   margin: 0 auto;
+   position: fixed;
+   top: 0;
+   left: 50%;
+   transform: translateX(-50%); /* center the fixed nav */
+   padding-top: 1rem;
+   z-index: 1000; /* optional: ensure it's above slides */
 }
+
 
 .main_nav_item {
    display: flex;
    justify-content: center;
    align-items: center;
    padding: 0;
-   margin: 0.5rem;
    color: #5f6368;
    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+   height: 2rem;
 }
+
+
+.trigger {
+  height: 100vh;
+}
+
+.slides {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 85%;
+  height: 100vh;
+
+  margin: 4vh auto;
+  right: 0;
+}
+
+.step {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 20px);
+
+  width: 85%;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.step.active {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+
+
+
 
 #main_grid_container{
    display: grid;
    background-color: white;
    border: 10px solid gray;
    margin: 2rem;
+   margin-top: 1rem;
    height: 45rem;
    width: 95%;
    grid-template-columns: 10% 80% 10%;

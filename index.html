@@ -6,6 +6,9 @@
     <title>CAE's Policy</title>
     <link rel="stylesheet" href="css/main.css"> <!-- Here I'm importing the CSS styles-->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
     <script src="js/main.js"></script> <!-- Here I'm importing the JS functions-->
@@ -15,74 +18,86 @@
         <a class="main_nav_item" href="#main_grid_container" class="nav_option">Check CAE Interactives!</a>
     </nav>
     
-    <div id="home" class="display_element"> <!-- This is the div from the header title-->
-        <h1>Chile</h1>
+<div id="home" class="display_element" style="height: 100vh; position: relative; font-family: 'Lucida Sans', sans-serif; overflow: hidden;">
+
+    <!-- Vertically centered image taking 50% height -->
+    <img src="svgs/volantin.jpg"
+         style="
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            object-fit: cover;
+            transform: translateY(-50%);
+            z-index: 0;
+            opacity: 1;"
+         alt="Volantin Chile" />
+
+    <!-- Text overlay -->
+    <div style="position: absolute; top: 50%; right: 5%; transform: translateY(-50%); z-index: 1; color: #ffffff; text-align: left; max-width: 40%;">
+        <h1 style="font-family: 'Noto Sans', sans-serif; color: #ba420f; font-size: 3rem; margin-bottom: 1rem;">
+            Crédito con Aval del Estado (CAE)
+        </h1>
+
+        <h2 style="font-family: 'Noto Sans', sans-serif; color: #184173; font-size: 1.5rem; font-weight: 400; margin-bottom: 2rem;">
+            How Chile transformed access to Higher Education
+        </h2>
+
     </div>
 
+</div>
+
     <div id="about_cae" class="non_display">
-        <div class="container">
+        <div class="scrolly">
+            <div class="trigger" data-step="step1"></div>
+            <div class="trigger" data-step="step2"></div>
+            <div class="trigger" data-step="step3"></div>
+            <div class="trigger" data-step="step4"></div>
 
-            <img src="https://via.placeholder.com/900x350?text=Chile+Higher+Education" alt="Chile Higher Education">
-            <p class="caption">Chile’s expansion of higher education access led to major financing reforms in the 2000s.</p>
+            <div class="slides">
 
-            <h2>1. What is CAE?</h2>
-            <p>
-                The <strong>Crédito con Aval del Estado (CAE)</strong> is a student loan program created in Chile in 2005 
-                to expand access to higher education. The system is financed by private banks, but the government 
-                acts as a <strong>state guarantor</strong>, ensuring that students without financial collateral can still 
-                access long-term educational loans.
-            </p>
+                <!-- 1. Rising Demand -->
+                <div class="step active" id="step1">
+                    <img height=200 width=300 src="svgs/hands.jpg"/>
+                    <h2>1990 - 2005</h2>
+                    <h2>A Public Policy to promote access to Higher Education</h2>
+                    <p>After many years of economic expansion, Higher Education is looked as the main vehicle for social mobility.</p> 
+                    <p><i>Students wanted to study, but most couldn’t afford it and banks wouldn't loan them money!</i></p>
+                </div>
 
-            <h2>2. Historical Background</h2>
-            <p>
-                During the early 2000s, Chile experienced a rapid increase in demand for higher education. 
-                Universities and technical institutions expanded, but tuition costs rose sharply. Traditional 
-                financing tools, including limited scholarship programs and small public loans, were insufficient 
-                to support the growing number of students.
-            </p>
-            <p>
-                In response, the Chilean government introduced CAE in 2005. Its goal was to:
-                <ul>
-                    <li>Provide large-scale financing to students from middle- and lower-income households.</li>
-                    <li>Increase enrollment in universities and technical institutes.</li>
-                    <li>Share financial risk between the state, private banks, and students.</li>
-                </ul>
-            </p>
+                <!-- 2. CAE Launch -->
+                <div class="step" id="step2">
+                    <img height=200 width=200 src="svgs/mochila.avif"/>
+                    <h2>2006: CAE Begins and Enrollment Expands</h2>
+                    <h2><i>Crédito con Aval del Estado</i></h2>
+                    <p>Goverment tells the banks: <i>"I'll be the guarantor of each student loan"</i></p>
+                    <p> Logically, Banks started loaning the money, and more people accessed Higher Education Institutions</p>
+                </div>
 
-            <img src="https://via.placeholder.com/900x350?text=Student+Loan+Expansion" alt="Student Loan Expansion">
-            <p class="caption">The CAE program helped Chile achieve one of the highest college enrollment rates in Latin America.</p>
+                <!-- 3. Growth & Frustration -->
+                <div class="step" id="step3">
+                    <img height=200 width=200 src="svgs/protest.svg"/>
+                    <h2>2011–2016: Protests and the Demand for Higher Education as a Right</h2>
+                    <p>As enrollment soared, so did frustration. Students argued that tuition was too expensive and that quality did not always match the cost.</p>
+                    <p>Massive nationwide protests followed—calling for better oversight, fairer funding, and the idea that access to Higher Education should be a <b>social right</b>, not a financial burden.</p>
+                    <p>These demonstrations reshaped the national conversation and pushed the government to rethink its role in student financing.</p>
+                </div>
 
-            <h2>3. Development and Evolution</h2>
-            <p>
-                Since its creation, CAE has undergone significant changes. Key developments include:
-                <ul>
-                    <li><strong>2006–2011:</strong> Rapid expansion of the program, with hundreds of thousands of new loans issued.</li>
-                    <li><strong>2012:</strong> Nationwide student protests pushed the government to reduce interest rates and improve repayment terms.</li>
-                    <li><strong>2016:</strong> Interest rates were capped at 2%, and repayment became income-dependent.</li>
-                    <li><strong>2020s:</strong> CAE became a central topic in educational reform discussions, especially regarding debt relief and the role of banks.</li>
-                </ul>
-            </p>
 
-            <img src="https://via.placeholder.com/900x350?text=Policy+Reform" alt="Policy Reform">
-            <p class="caption">Public debate about CAE has influenced multiple policy reforms over the last decade.</p>
-
-            <h2>4. Future Challenges</h2>
-            <p>
-                Today, CAE faces several important challenges:
-            </p>
-            <ul>
-                <li><strong>Debt Accumulation:</strong> Many graduates carry significant debt relative to their income, especially in low-paying fields.</li>
-                <li><strong>Administrative Complexity:</strong> The involvement of private banks, state guarantees, and multiple repayment schemes makes the system difficult for students to navigate.</li>
-                <li><strong>Equity Concerns:</strong> Students from lower-income families still rely disproportionately on loans rather than grants.</li>
-                <li><strong>Reform Pressure:</strong> Policymakers continue to debate replacing CAE with a fully public financing system.</li>
-            </ul>
-
-            <p>
-                As Chile advances toward new educational models, CAE remains a critical part of the conversation about how to 
-                balance access, affordability, and long-term fiscal sustainability.
-            </p>
-
+                <!-- 4. Government Action -->
+                <div class="step" id="step4">
+                    <img height=200 width=200 src="svgs/politics.svg"/>
+                    <h2>2017–Today: Debt Relief and the Politics of CAE</h2>
+                    <p>By the mid-2010s, more than a million students had used CAE loans—making it <b>one of the largest public-backed credit programs in Chile’s history</b>.</p>
+                    <p>The government began purchasing CAE portfolios from banks, reducing interest rates, and expanding tuition-free policies for low- and middle-income families.</p>
+                    <p>Students: <i>"I'd prefer be indebted with the State than with the Bank"</i></p>
+                    <p>As CAE grew in size and cost, it became one of the most debated policies in Chile—shaping elections, reforms, and the future of student financing.</p>
+                </div>
+            </div>
         </div>
+
+
     </div>
     
     <div id="main_grid_container" class="non_display">
@@ -391,7 +406,34 @@
 
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/scrollama"></script>
 <script>
+
+// -----------------------------------------------------------------------------
+//  Scrolling the About CAE
+// -----------------------------------------------------------------------------
+
+const scroller = scrollama();
+
+scroller
+  .setup({
+    step: ".trigger",     // WATCH SPACERS
+    offset: 0.5,
+    debug: false
+  })
+  .onStepEnter((response) => {
+    const id = response.element.dataset.step;
+
+    d3.selectAll(".step").classed("active", false);
+    d3.select(`#${id}`).classed("active", true);
+  });
+
+window.addEventListener("resize", scroller.resize);
+
+
+
+
+
 
 // -----------------------------------------------------------------------------
 //  Constants
@@ -1395,6 +1437,7 @@ d3.selectAll("#map .unselected_region")
                                 .classed("non_display", true);
         d3.select("#main_grid_container").classed("display_element", false)
                                     .classed("non_display", true);
+        d3.select("#main_nav").style("position", "fixed")
     });
 
     d3.select('a[href="#about_cae"]').on("click", function(event) {
@@ -1405,6 +1448,7 @@ d3.selectAll("#map .unselected_region")
                                 .classed("non_display", false);
         d3.select("#main_grid_container").classed("display_element", false)
                                     .classed("non_display", true);
+        d3.select("#main_nav").style("position", "fixed")
     });
     
     d3.select('a[href="#main_grid_container"]').on("click", function(event) {
@@ -1415,6 +1459,7 @@ d3.selectAll("#map .unselected_region")
                                 .classed("non_display", true);
         d3.select("#main_grid_container").classed("display_element", true)
                                     .classed("non_display", false);
+        d3.select("#main_nav").style("position", "relative")
     });
     
     // This is showing/hiding for the main grid container of data
