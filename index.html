@@ -104,7 +104,7 @@
         <!-- This is the left section-->
         <div id="region_selection">
             <div>
-                <p class="filter_title">Select Region(s)</p>
+                <p class="filter_title">Region(s)</p>
                 <p class="filter_instruction"><i>Click on them!</i></p> 
             </div>
             <div id="map_section">
@@ -229,7 +229,7 @@
 
                         <!-- This is the total borrowed-->
                         <div id="total_borrowed">
-                            <h2 style="margin-bottom: 2.5rem;">Total Borrowed (new CAEs + Old Ones)</h2>
+                            <h2 style="margin-bottom: 2.5rem;">Total Borrowed:</h2>
 
                             <!-- Hidden canvas used for pixel sampling -->
                             <canvas id="imageCanvas" width="900" height="310" class="non_display"></canvas>
@@ -243,7 +243,7 @@
 
                         <!-- This is the total granted requests section-->
                         <div id="total_caes_granted">
-                            <h2>Students enrolled with CAE financing</h2>
+                            <h2>Share of total students being financed with CAE</h2>
                             <svg id="total_caes_chart" width="700" height="200"></svg>
                         </div>
 
@@ -257,7 +257,7 @@
                     
                     <!-- Here's where the chart goes-->
                         <div id="percentage_financed">
-                            <svg viewBox = "0 0 1000 400" width="80%" height="400" margin="0"></svg>
+                            <svg viewBox = "0 0 1000 400" width="80%" height="300" margin="0"></svg>
                         </div>    
                     
                         <!-- This is the Average loan section-->  
@@ -291,7 +291,11 @@
         <!-- This is the year selection range -->
         <div id="filters">
             <div id="year_selection" class="filter_square">
-                <div class="filter_title">Select Year(s)</div>
+                <div>
+                    <div class="filter_title">Requested in:</div>
+                    <i class="filter_instruction">Hover on them!</i>
+
+                </div>
 
                 <div id="years_options" class="filter_square">
                     <div class="button_year unselected_year">2006</div>
@@ -318,7 +322,7 @@
             
             <!-- This is the quintile selection range -->
             <div id="quintile_selection" class="filter_square">
-                <div class="filter_title">Select Income Quintile(s)</div>
+                <div class="filter_title">Income Quintile(s)</div>
                 <svg
                     id="quintile_pyramid"
                     viewBox="0 0 400 400"
@@ -382,7 +386,7 @@
 
             <!-- This is the Gender selection range -->
             <div id="gender_selection" class="filter_square">
-                <div class="filter_title">Select Gender(s)</div>
+                <div class="filter_title">Gender(s)</div>
                 
                 <div>
                     <svg id="gender_buttons" viewBox="0 0 100 30">
@@ -1051,7 +1055,7 @@ function updateAvgPercentFinanced(filters) {
 
     let family_financed = 1-bank_financed;
     let family_money = loaned_money/bank_financed*family_financed;                    
-    radio_scale = d3.scaleLinear([0,bank_financed], [0, 250]) // This is the scale for the radius
+    radio_scale = d3.scaleLinear([0,bank_financed], [0, 200]) // This is the scale for the radius
 
     let bankRadius = radio_scale(bank_financed);
     let familyRadius = radio_scale(family_financed);
@@ -1089,14 +1093,23 @@ function updateAvgPercentFinanced(filters) {
         .style("border-color", "black")
         .style("border", "3px");
 
+
     let percent_line = bank_financed * 1000;
     let stroke_widht_hori= "2%";
-    let formatted_percent = (Math.round(percent_line)/10) + "%"
+    let formatted_percent = "0%"
     let ratio_bank = bankRadius / familyRadius;
     let ratio_loan = Math.round(ratio_bank*10) / 10;
-    let ratio_loan_formatted = ratio_loan.toLocaleString();
+    let ratio_loan_formatted = 0;
+
+    if (ratio_loan > 0) {
+        ratio_loan_formatted = ratio_loan.toLocaleString();
+    }
+
+    if (percent_line > 0) {
+        formatted_percent = (Math.round(percent_line)/10) + "%"
+    }
     
-    let text_takeaway = "On Average, banks financed " + ratio_loan_formatted + " times the contribution of the family<br>(" + formatted_percent + " of requested tuition)";
+    let text_takeaway = "On Average, for every <b>$1 the family</b> contributed, <b>banks contributed with  $" + ratio_loan_formatted + "<br></b>(" + formatted_percent + " of requested tuition)";
 
 
     d3.select("#text_percentage_financed p")
@@ -1104,10 +1117,18 @@ function updateAvgPercentFinanced(filters) {
 
     let total_dollars_bank_int = Math.round(loaned_money);
     let formatted_dollars_bank = total_dollars_bank_int.toLocaleString();
-    let dollars_bank = "US$" + formatted_dollars_bank;
+    let dollars_bank = "US$" + 0;
     let total_dollars_family_int = Math.round(family_money);
     let formatted_dollars_family = total_dollars_family_int.toLocaleString();
-    let dollars_family = "US$" + formatted_dollars_family;
+    let dollars_family = "US$" + 0;
+    
+    if (total_dollars_bank_int > 0) {
+        dollars_bank = "US$" + formatted_dollars_bank;
+    }
+
+    if (total_dollars_family_int > 0) {
+        dollars_family = "US$" + formatted_dollars_family;
+    }
     
     d3.select("#avg_loan #banks p")
       .text(dollars_bank)
