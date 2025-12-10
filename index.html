@@ -1374,7 +1374,7 @@ d3.selectAll("#map .unselected_region")
   let selected_quintiles = []
 
   d3.selectAll("#quintile_pyramid .unselected_quintile")
-    .on("mouseover", function(event, d) {
+    .on("click", function(event, d) {
         if (d3.select(this).attr("class") === "unselected_quintile") {
             d3.select(this).attr("class", "selected_quintile");
             const quintile_selected = d3.select(this).attr("data-value");
@@ -1394,7 +1394,7 @@ d3.selectAll("#map .unselected_region")
     let selected_genders = []
 
     d3.selectAll(".female_button_unselected")
-        .on("mouseover", function(event, d) {
+        .on("click", function(event, d) {
             if (d3.select(this).attr("class") === "female_button_unselected") {
                 d3.select(this).attr("class", "female_button_selected");
                 const selected_gender = d3.select(this).attr("data-value");
@@ -1412,7 +1412,7 @@ d3.selectAll("#map .unselected_region")
             })
     
     d3.selectAll(".male_button_unselected")
-        .on("mouseover", function(event, d) {
+        .on("click", function(event, d) {
             if (d3.select(this).attr("class") === "male_button_unselected") {
                 d3.select(this).attr("class", "male_button_selected");
                 const selected_gender = d3.select(this).attr("data-value");
@@ -1432,7 +1432,7 @@ d3.selectAll("#map .unselected_region")
     let selected_years = []
 
     d3.selectAll(".button_year.unselected_year")
-        .on("mouseover", function(event, d) {
+        .on("click", function(event, d) {
             if (d3.select(this).attr("class") === "button_year unselected_year") {
                 d3.select(this).attr("class", "button_year selected_year");
                 const year = parseInt(d3.select(this).text())
