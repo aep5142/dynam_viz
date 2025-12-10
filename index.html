@@ -55,7 +55,6 @@
             <div class="trigger" data-step="step3"></div>
             <div class="trigger" data-step="step4"></div>
 
-            <div id="scroll-hint">Scroll to continue ↓</div>
             <div class="slides">
 
                 <!-- 1. Rising Demand -->
@@ -65,15 +64,17 @@
                     <h2>A Public Policy to promote access to Higher Education</h2>
                     <p>After many years of economic expansion, Higher Education is looked as the main vehicle for social mobility.</p> 
                     <p><i>Students wanted to study, but most couldn’t afford it and banks wouldn't loan them money!</i></p>
+                    <div class="scroll-hint">Scroll to continue ↓</div>
                 </div>
 
                 <!-- 2. CAE Launch -->
                 <div class="step" id="step2">
-                    <img height=200 width=200 src="svgs/mochila.avif"/>
+                    <img height=200 width=200 src="svgs/mochila.avif"/> 
                     <h2>2006: CAE Begins and Enrollment Expands</h2>
                     <h2><i>Crédito con Aval del Estado</i></h2>
                     <p>Goverment tells the banks: <i>"I'll be the guarantor of each student loan"</i></p>
                     <p> Logically, Banks started loaning the money, and more people accessed Higher Education Institutions</p>
+                    <div class="scroll-hint">Scroll to continue ↓</div>
                 </div>
 
                 <!-- 3. Growth & Frustration -->
@@ -83,6 +84,7 @@
                     <p>As enrollment soared, so did frustration. Students argued that tuition was too expensive and that quality did not always match the cost.</p>
                     <p>Massive nationwide protests followed—calling for better oversight, fairer funding, and the idea that access to Higher Education should be a <b>social right</b>, not a financial burden.</p>
                     <p>These demonstrations reshaped the national conversation and pushed the government to rethink its role in student financing.</p>
+                    <div class="scroll-hint">Scroll to continue ↓</div>
                 </div>
 
 
@@ -436,7 +438,7 @@ scroller
     d3.select(`#${id}`).classed("active", true);
 
     // Show or hide the scroll hint
-    const hint = document.getElementById("scroll-hint");
+    const hint = document.getElementsByClassName("scroll-hint");
     if (stepsWithHint.includes(id)) {
       hint.classList.remove("hidden");
     } else {
@@ -1465,7 +1467,9 @@ d3.selectAll("#map .unselected_region")
                                 .classed("non_display", true);
         d3.select("#main_grid_container").classed("display_element", false)
                                     .classed("non_display", true);
-        d3.select("#main_nav").style("position", "fixed")
+        d3.select("#all_footer").classed("display_element", true)
+                                    .classed("non_display", false);    
+        d3.select("#main_nav").style("position", "relative")
     });
 
     d3.select('a[href="#about_cae"]').on("click", function(event) {
@@ -1476,6 +1480,8 @@ d3.selectAll("#map .unselected_region")
                                 .classed("non_display", false);
         d3.select("#main_grid_container").classed("display_element", false)
                                     .classed("non_display", true);
+        d3.select("#all_footer").classed("display_element", false)
+                                    .classed("non_display", true);                                    
         d3.select("#main_nav").style("position", "fixed")
     });
     
@@ -1486,6 +1492,8 @@ d3.selectAll("#map .unselected_region")
         d3.select("#about_cae").classed("display_element", false)
                                 .classed("non_display", true);
         d3.select("#main_grid_container").classed("display_element", true)
+                                    .classed("non_display", false);
+        d3.select("#all_footer").classed("display_element", true)
                                     .classed("non_display", false);
         d3.select("#main_nav").style("position", "relative")
     });
@@ -1618,6 +1626,58 @@ let filters = filterArrays(selected_regions,
 
 update_all()
 </script>
+    <div id="all_footer" class="display_element">
+        <footer class="footer-ribbon" id="sources-contact">
+        <div class="footer-content">
+            <div class="footer-section">
+            <h3>Data Source</h3>
+            <p>
+                <a 
+                href="https://portal.ingresa.cl/estadisticas/estadisticas/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                >
+                Comisión INGRESA - Chile 🇨🇱
+
+                </a>
+            </p>
+            <p class="footer-note">Comisión Administradora del Sistema de Créditos para Estudios Superiores</p>
+            </div>
+            
+            <div class="footer-section">
+            <h3>Project</h3>
+            <p>
+                <a 
+                href="https://github.com/aep5142/dynam_viz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                >
+                📁 View Repository
+                </a>
+            </p>
+            </div>
+            
+            <div class="footer-section">
+            <h3>Connect</h3>
+            <p>
+                <a 
+                href="https://github.com/aep5142" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                >
+                👤 GitHub
+                </a>
+            </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>Created to facilitate analysis and impact of CAE • Data visualization project</p>
+        </div>
+        </footer>
+    </div>
+
+
 
 </body>
 

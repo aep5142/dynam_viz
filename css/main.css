@@ -1,5 +1,5 @@
 body {
-  font-family: "Calibri", "Segoe UI", sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #FFFDFD;
   place-items: center;
   text-align: center;
@@ -32,6 +32,7 @@ a {
    transform: translateX(-50%); /* center the fixed nav */
    padding-top: 1rem;
    z-index: 1000; /* optional: ensure it's above slides */
+   position: relative;
 }
 
 
@@ -85,9 +86,9 @@ a {
   transform: translate(-50%, 0);
 }
 
-#scroll-hint {
-    position: fixed;
-    top: 10px;
+.scroll-hint {
+    position: absolute;
+    top: 90%;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.55);
@@ -396,3 +397,57 @@ a {
       font-size: 32px; /* Tamaño de los íconos */
       color: #555555;
     }
+
+/* Footer Ribbon */
+.footer-ribbon {
+  background-color: #ECE2D0; 
+  padding: 18px 0;           /* compact height */
+  border-top: 2px solid #000;
+}
+
+/* 3-column grid */
+.footer-content {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.footer-section h3 {
+  margin-bottom: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.footer-section p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+.footer-section a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+}
+
+.footer-section a:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.footer-note {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Bottom bar */
+.footer-bottom {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  padding-top: 8px;
+  border-top: 1px solid #000;
+}
