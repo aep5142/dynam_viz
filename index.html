@@ -55,6 +55,7 @@
             <div class="trigger" data-step="step3"></div>
             <div class="trigger" data-step="step4"></div>
 
+            <div id="scroll-hint">Scroll to continue ↓</div>
             <div class="slides">
 
                 <!-- 1. Rising Demand -->
@@ -419,25 +420,31 @@
 
 const scroller = scrollama();
 
+const stepsWithHint = ["step1", "step2", "step3"];
+
 scroller
   .setup({
-    step: ".trigger",     // WATCH SPACERS
+    step: ".trigger",
     offset: 0.5,
     debug: false
   })
   .onStepEnter((response) => {
     const id = response.element.dataset.step;
 
+    // Activate slide
     d3.selectAll(".step").classed("active", false);
     d3.select(`#${id}`).classed("active", true);
+
+    // Show or hide the scroll hint
+    const hint = document.getElementById("scroll-hint");
+    if (stepsWithHint.includes(id)) {
+      hint.classList.remove("hidden");
+    } else {
+      hint.classList.add("hidden");
+    }
   });
 
 window.addEventListener("resize", scroller.resize);
-
-
-
-
-
 
 // -----------------------------------------------------------------------------
 //  Constants

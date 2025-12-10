@@ -85,8 +85,24 @@ a {
   transform: translate(-50%, 0);
 }
 
+#scroll-hint {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 9999;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
 
-
+#scroll-hint.hidden {
+    opacity: 0;
+}
 
 
 #main_grid_container{
