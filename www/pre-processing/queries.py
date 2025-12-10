@@ -35,7 +35,7 @@ def automates_where_clause(kwargs):
 
 # Helper 2: Watch the parquet db
 def query_view_db(
-    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+    db: duckdb.DuckDBPyConnection, path_parquet="www/data/summary_table.parquet", **kwargs
 ) -> pd.DataFrame:
     where_clause = automates_where_clause(kwargs)
 
@@ -56,7 +56,7 @@ def query_view_db(
 
 
 def query_total_borrowed(
-    db: duckdb.DuckDBPyConnection, path_parquet="data/summary_table.parquet", **kwargs
+    db: duckdb.DuckDBPyConnection, path_parquet="www/data/summary_table.parquet", **kwargs
 ) -> int:
     where_clause = automates_where_clause(kwargs)
 
