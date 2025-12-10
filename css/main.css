@@ -112,7 +112,7 @@ a {
    border: 5px solid gray;
    margin: 2rem;
    margin-top: 1rem;
-   height: 45rem;
+   height: 100%;
    width: 95%;
    grid-template-columns: 10% 80% 10%;
    font-family: 'Poppins', sans-serif;
@@ -234,7 +234,7 @@ a {
     flex-direction: column;
     justify-content: center;   /* vertical centering */
     align-items: center;       /* horizontal centering */
-    height: 100%;              /* needed for vertical centering */
+    height: 90vh;              /* needed for vertical centering */
     gap: 0rem;                 /* optional spacing between blocks */
 }
 
@@ -260,6 +260,7 @@ a {
    place-items: center;
    place-content: center;
    text-align: center;
+   height: 90vh;
 }
 
 #filters {
