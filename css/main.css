@@ -234,7 +234,7 @@ a {
     flex-direction: column;
     justify-content: center;   /* vertical centering */
     align-items: center;       /* horizontal centering */
-    height: 90vh;              /* needed for vertical centering */
+    height: 80vh;              /* needed for vertical centering */
     gap: 0rem;                 /* optional spacing between blocks */
 }
 
@@ -244,7 +244,7 @@ a {
     flex-direction: column;
     justify-content: center;   /* vertical centering */
     align-items: center;       /* horizontal centering */
-    height: 90vh;              /* needed for vertical centering */
+    height: 80vh;              /* needed for vertical centering */
     gap: 0rem;                 /* optional spacing between blocks */
 }
 
@@ -270,7 +270,7 @@ a {
    place-items: center;
    place-content: center;
    text-align: center;
-   height: 90vh;
+   height: 80vh;
 }
 
 #filters {
