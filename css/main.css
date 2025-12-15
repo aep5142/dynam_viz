@@ -229,6 +229,16 @@ a {
    border: solid 0.5px lightgray;
 }
 
+#cae_profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* vertical centering */
+    align-items: center;       /* horizontal centering */
+    height: 90vh;              /* needed for vertical centering */
+    gap: 0rem;                 /* optional spacing between blocks */
+}
+
+
 #avg_student {
     display: flex;
     flex-direction: column;
