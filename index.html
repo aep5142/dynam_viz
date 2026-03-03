@@ -222,7 +222,7 @@
         <div id="data_section">
             
             <nav id="nav_bar" class="div_three_columns">
-                <a href="#cae_profile"class="nav_option">CAE profile</a>
+                <a href="#cae_profile"class="nav_option">General CAE Profile</a>
                 <a href="#avg_student" class="nav_option">Average Student Loan</a>
                 <a href="#grad_rates" class="nav_option">Student Outcomes</a>
             </nav>
@@ -232,7 +232,7 @@
 
                         <!-- This is the total borrowed-->
                         <div id="total_borrowed">
-                            <h2 style="margin-bottom: 2.5rem;">Total Borrowed:</h2>
+                            <h2 style="margin-bottom: 2.5rem;">Total Face Value of Loans:</h2>
 
                             <!-- Hidden canvas used for pixel sampling -->
                             <canvas id="imageCanvas" width="900" height="310" class="non_display"></canvas>
@@ -296,7 +296,7 @@
             <div id="year_selection" class="filter_square">
                 <div>
                     <div class="filter_title">Requested in:</div>
-                    <i class="filter_instruction">Hover on them!</i>
+                    <i class="filter_instruction">Click on them!</i>
 
                 </div>
 
@@ -343,7 +343,8 @@
                                 ry="20"/>
                         <text class="text_quintile" x="200" y="355"
                             text-anchor="middle"
-                            dominant-baseline="middle">1st & 2nd Quintiles</text>
+                            dominant-baseline="middle"
+                            pointer-events="none">1st & 2nd Quintiles</text>
 
                         <!-- Level 2: Quintil 3 -->
                         <rect class="unselected_quintile"
@@ -356,7 +357,8 @@
                                 ry="20"/>
                         <text class="text_quintile" x="200" y="255"
                             text-anchor="middle"
-                            dominant-baseline="middle">3rd Quintile</text>
+                            dominant-baseline="middle"
+                            pointer-events="none">3rd Quintile</text>
 
                         <!-- Level 3: Quintil 4 -->
                         <rect class="unselected_quintile"
@@ -369,7 +371,8 @@
                                 ry="20"/>
                         <text class="text_quintile" x="200" y="155"
                             text-anchor="middle"
-                            dominant-baseline="middle">4th Quintile</text>
+                            dominant-baseline="middle"
+                            pointer-events="none">4th Quintile</text>
 
                         <!-- Level 4 (top): Quintil 5 -->
                         <rect class="unselected_quintile"
@@ -382,7 +385,8 @@
                                 ry="20"/>
                         <text class="text_quintile" x="200" y="55"
                             text-anchor="middle"
-                            dominant-baseline="middle">5th Quintile</text>
+                            dominant-baseline="middle"
+                            pointer-events="none">5th Quintile</text>
 
                 </svg>
             </div>
@@ -396,12 +400,12 @@
                         <!-- Female button -->
                         <circle class="female_button_unselected" data-value="F" cx="25" cy="15" r="14"></circle>
                         <text x="25" y="15" text-anchor="middle" dominant-baseline="middle"
-                         font-size="6.5" fill="#000">Female</text>
+                         font-size="6.5" fill="#000" pointer-events="none">Female</text>
 
                         <!-- Male button -->
                         <circle class="male_button_unselected" data-value="M" cx="75" cy="15" r="14"></circle>
                         <text x="75" y="15" text-anchor="middle" dominant-baseline="middle"
-                            font-size="6.5" fill="#000">Male</text>
+                            font-size="6.5" fill="#000" pointer-events="none">Male</text>
                     </svg>
                 </div>
             </div>
@@ -870,7 +874,7 @@ function updateTotalStudents(filters) {
             const total_enrolled = d.data.total_enrolled.toLocaleString();
             const total_cae = d.data.total_cae.toLocaleString();
             tooltip.style("display", "block")
-                   .html(`Share CAE: ${pct}<br>Total Enrolled: ${total_enrolled}<br>Total CAE: ${total_cae}`)
+                   .html(`Share with CAE: ${pct}<br>Total Enrolled in Higher Education: ${total_enrolled}<br>Total with CAE: ${total_cae}`)
                    .style("left", (event.pageX + 5) + "px")
                    .style("top", (event.pageY - 25) + "px");
         })
@@ -1118,7 +1122,7 @@ function updateAvgPercentFinanced(filters) {
         formatted_percent = (Math.round(percent_line)/10) + "%"
     }
     
-    let text_takeaway = "On Average, for every <b>$1 the family</b> contributed, <b>banks contributed with  $" + ratio_loan_formatted + "<br></b>(" + formatted_percent + " of requested tuition)";
+    let text_takeaway = "On Average, for every <b>$1 the family</b> contributed, <b>banks contributed with  $" + ratio_loan_formatted + "<br></b>(" + formatted_percent + " approval of reference tuition)";
 
 
     d3.select("#text_percentage_financed p")
@@ -1665,14 +1669,23 @@ update_all()
                 target="_blank" 
                 rel="noopener noreferrer"
                 >
-                👤 GitHub
+                GitHub
+                </a>
+            </p>
+            <p>
+                <a 
+                href="https://www.linkedin.com/in/agustineyzaguirre-consulting-datascience-python/?locale=en_US" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                >
+                LinkedIn
                 </a>
             </p>
             </div>
         </div>
         
         <div class="footer-bottom">
-            <p>Created to facilitate analysis and impact of CAE • Data visualization project</p>
+            <p>Created to facilitate analysis and impact of CAE • Data visualization project • Agustín Eyzaguirre P.</p>
         </div>
         </footer>
     </div>
