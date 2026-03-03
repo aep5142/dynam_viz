@@ -462,3 +462,94 @@ a {
   padding-top: 8px;
   border-top: 1px solid #000;
 }
+
+/* Methodology Section */
+.methodology-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 40px 70px;
+  text-align: left;
+}
+
+.methodology-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgb(24, 24, 24);
+  margin-bottom: 12px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #000;
+}
+
+.methodology-intro {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgb(65, 65, 65);
+  margin-bottom: 36px;
+}
+
+.methodology-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.methodology-card {
+  padding: 24px 28px;
+  border: 1px solid #dedad4;
+  border-radius: 4px;
+  background: #f9f7f4;
+}
+
+.methodology-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.methodology-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgb(24, 24, 24);
+  margin: 0 0 10px 0;
+}
+
+.methodology-card p,
+.methodology-card li {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: rgb(65, 65, 65);
+  margin: 6px 0;
+}
+
+.methodology-card ul {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+
+.methodology-card code {
+  font-family: 'Courier New', monospace;
+  background: #ece8e1;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.83rem;
+}
+
+.methodology-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #ECE2D0;
+  border: 1px solid #c8bfaf;
+  border-radius: 3px;
+  padding: 2px 7px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 650px) {
+  .methodology-grid {
+    grid-template-columns: 1fr;
+  }
+  .methodology-card.full-width {
+    grid-column: auto;
+  }
+}

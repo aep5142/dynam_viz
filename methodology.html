@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Methodology — CAE's Policy</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #FFFDFD;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .methodology-back {
+      display: block;
+      padding: 18px 40px;
+      font-size: 0.85rem;
+      color: #000;
+      text-decoration: none;
+      border-bottom: 1px solid #dedad4;
+      background: #ECE2D0;
+      font-weight: 600;
+    }
+
+    .methodology-back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="methodology-back" href="index.html">← Back to dashboard</a>
+
+  <section class="methodology-section">
+
+    <h2 class="methodology-title">Methodology</h2>
+    <p class="methodology-intro">
+      This page documents how the data behind this visualization was collected,
+      cleaned, transformed, and aggregated. Every number shown in the dashboard
+      can be traced back to the steps described below.
+    </p>
+
+    <div class="methodology-grid">
+
+      <!-- Data Source -->
+      <div class="methodology-card">
+        <span class="methodology-tag">Data source</span>
+        <h3>CAE Historical Database</h3>
+        <p>
+          The primary dataset is the <strong>Base de Datos Histórica</strong> published
+          by <a href="https://portal.ingresa.cl/estadisticas/estadisticas/" target="_blank"
+          rel="noopener noreferrer">Comisión INGRESA</a> — the government body that
+          administers Chile's state-backed student loan program (CAE).
+        </p>
+        <p>
+          The file is a semicolon-delimited <code>.txt</code> export with
+          <strong>~12 million rows</strong> and 42 columns, one row per
+          student–year loan record, covering every CAE cohort from
+          <strong>2006 to 2024</strong>.
+        </p>
+        <p>
+          Key fields include: student identifier, registered gender, family
+          region and income quintile, secondary-school dependency, institution
+          name and type, program name, loan amounts requested and reference
+          tuition, loan year, and beneficiary/outcome status.
+        </p>
+      </div>
+
+      <!-- Data Cleaning -->
+      <div class="methodology-card">
+        <span class="methodology-tag">Data cleaning</span>
+        <h3>Loading &amp; Normalization</h3>
+        <p>The raw file was read using Python / pandas with <code>latin1</code>
+        encoding and PyArrow as the parsing engine.</p>
+        <ul>
+          <li>Column names and all string cells were stripped of leading/trailing
+          whitespace.</li>
+          <li>Monetary fields (<code>arancel_solicitado</code> and
+          <code>arancel_referencia</code>) contained non-numeric characters
+          (dots, commas, spaces) that were removed before casting to integer.</li>
+          <li>Year columns contained floating-point artifacts from the source
+          export; values were multiplied by 1 000, rounded, and cast to nullable
+          integers to recover the correct year.</li>
+          <li>Records with missing or zero tuition values were retained in the
+          database but excluded from per-row monetary calculations.</li>
+        </ul>
+      </div>
+
+      <!-- Inflation Adjustment -->
+      <div class="methodology-card">
+        <span class="methodology-tag">Inflation adjustment</span>
+        <h3>Adjusting to 2024 CLP</h3>
+        <p>
+          Because the dataset spans 18 cohort years, nominal loan amounts
+          are not directly comparable across time.
+          Each record's requested tuition was multiplied by a
+          year-specific cumulative inflation factor to express amounts in
+          <strong>2024 Chilean Pesos (CLP)</strong>:
+        </p>
+        <p>
+          <code>adjusted = arancel_solicitado × (1 + inflation_factor)</code>
+        </p>
+        <p>
+          The factors were set so that 2024 = 1.0 (no adjustment). The 2006
+          factor is ~1.10, meaning a 2006 loan amount must grow by ~110 % to
+          match its 2024 purchasing-power equivalent. Factors for each year
+          between 2006 and 2023 decrease monotonically toward zero.
+        </p>
+      </div>
+
+      <!-- Currency Conversion -->
+      <div class="methodology-card">
+        <span class="methodology-tag">Currency</span>
+        <h3>CLP → USD Conversion</h3>
+        <p>
+          Dollar figures shown in the dashboard use a fixed reference exchange
+          rate of <strong>950 CLP per USD</strong>.
+        </p>
+        <p>
+          This single rate is applied uniformly to all years after inflation
+          adjustment, so comparisons across cohorts reflect real purchasing
+          power rather than historical exchange-rate fluctuations. It is an
+          approximation intended for readability, not financial precision.
+        </p>
+      </div>
+
+      <!-- Metrics -->
+      <div class="methodology-card full-width">
+        <span class="methodology-tag">Metrics</span>
+        <h3>How Each Indicator Is Calculated</h3>
+        <ul>
+          <li><strong>New loans granted</strong> — count of records where
+          <code>tipo_beneficiario = "NUEVO BENEFICIARIO"</code>, grouped by year,
+          region, income quintile, and gender.</li>
+          <li><strong>Total borrowed (USD)</strong> — sum of inflation-adjusted
+          tuition requests divided by 950, for the selected filters.</li>
+          <li><strong>Average loan (USD)</strong> — mean of inflation-adjusted
+          amounts divided by 950, weighted by transaction count.</li>
+          <li><strong>% of tuition financed</strong> — mean of
+          <code>arancel_solicitado / arancel_referencia</code>, restricted to
+          values in the range (0, 1] to exclude data-entry errors.</li>
+          <li><strong>Average years financed</strong> — mean number of distinct
+          loan years associated with each student identifier.</li>
+          <li><strong>Graduation rate</strong> —
+          <code>SUM(egresos) / SUM(total_program_enrollments)</code>; counts
+          records whose final status is graduation (<em>egreso</em>).</li>
+          <li><strong>Desertion rate</strong> —
+          <code>SUM(deserciones) / SUM(total_program_enrollments)</code>; counts
+          records whose final status is formal dropout (<em>deserción</em>).</li>
+          <li><strong>Student paths</strong> — each unique student–program
+          combination is classified as: direct graduation, graduation after
+          suspension, direct desertion, desertion after suspension, or career
+          change (within or across institutions).</li>
+        </ul>
+      </div>
+
+      <!-- Limitations -->
+      <div class="methodology-card full-width">
+        <span class="methodology-tag">Limitations</span>
+        <h3>Caveats &amp; Known Constraints</h3>
+        <ul>
+          <li>The <strong>exchange rate (950 CLP/USD)</strong> is fixed and does
+          not reflect year-by-year fluctuations in the peso–dollar rate.</li>
+          <li><strong>Family income quintile</strong> is self-reported by
+          applicants at the time of the loan application and may not reflect
+          current economic status.</li>
+          <li><strong>Geographic classification</strong> is based on the
+          student's family region of origin, not the location of the
+          institution attended.</li>
+          <li><strong>Outcome statuses</strong> (graduation, desertion) are
+          reported by institutions to INGRESA and may include reporting lags
+          of one to two years for recent cohorts.</li>
+          <li>Records with missing quintile, region, or gender values are
+          included in database totals but excluded from breakdowns that require
+          those fields, which may cause small discrepancies between aggregate
+          and disaggregated totals.</li>
+          <li>The dataset is administrative by nature and reflects only students
+          who held an active CAE loan; students who repaid early, transferred to
+          gratuity (free tuition), or whose records were merged may be
+          undercounted in later years.</li>
+          <li>The dataset records reference tuition (<code>arancel_referencia</code>)
+            rather than the actual tuition charged by each institution. Loan approval
+            rates were derived by comparing the amount requested
+            (<code>arancel_solicitado</code>) against the reference tuition, as
+            lower-income students tend to request a higher share of tuition costs yet
+            face lower approval rates.</li>
+        </ul>
+      </div>
+
+    </div><!-- /.methodology-grid -->
+  </section>
+
+  <footer class="footer-ribbon">
+    <div class="footer-bottom" style="margin-top:0; border-top: none;">
+      <p>Created to facilitate analysis and impact of CAE • Data visualization project • Agustín Eyzaguirre P.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
